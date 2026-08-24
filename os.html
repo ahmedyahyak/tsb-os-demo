@@ -132,7 +132,7 @@
 </style>
 </head>
 <body>
-<div class="demoStrip">Scripted demo · every name here is fictional · your deployment runs on your real business — <a href="start.html">design yours</a></div>
+<div class="demoStrip">Scripted demo · every name here is fictional · your deployment runs on your real business. <a href="start.html">design yours</a></div>
 <canvas id="sky" aria-hidden="true"></canvas>
 
 <main class="shell">
@@ -152,7 +152,7 @@
 
     <div class="bar" id="bar">
       <span class="sigil" aria-hidden="true"></span>
-      <input id="cmd" type="text" placeholder="say what you need — the OS already knows your business" aria-label="Command input" autocomplete="off">
+      <input id="cmd" type="text" placeholder="say what you need, the OS already knows your business" aria-label="Command input" autocomplete="off">
       <span class="hint">⏎ run</span>
     </div>
     <div class="suggest" role="group" aria-label="Suggested commands">
@@ -179,7 +179,7 @@
         <span class="tag">89,267 skills · searched, not installed</span>
       </header>
       <div class="stream-body" id="stream">
-        <p class="idleline">idle — try a command above and watch the workflow</p>
+        <p class="idleline">idle, try a command above and watch the workflow</p>
       </div>
     </div>
   </section>
@@ -187,15 +187,15 @@
   <section class="pane mission">
     <header>
       <span class="eyebrow">mission control</span>
-      <span class="tag">projection of the graph — nothing here is typed in</span>
+      <span class="tag">projection of the graph, nothing here is typed in</span>
     </header>
     <div class="pulse-row">
       <span><i class="dot run"></i>4 running</span>
       <span><i class="dot wait"></i>3 waiting on you</span>
       <span><i class="dot block"></i>1 blocked</span>
-      <span><i class="dot run"></i><b>30 specialists</b> on call</span>
+      <span><i class="dot run"></i><b>36 specialists</b> on call</span>
       <span><i class="dot sched"></i>doctor on guard · self healing</span>
-      <span><i class="dot sched"></i>next deadline <b>Sep 04 — Al Noor site</b></span>
+      <span><i class="dot sched"></i>next deadline <b>Sep 04, Al Noor site</b></span>
     </div>
     <div class="board">
       <div class="col">
@@ -335,7 +335,7 @@
       }
     })();
   }
-  setTimeout(() => say("context is warm. al noor call at 15:00 — want the brief?"), reduced ? 400 : 2600);
+  setTimeout(() => say("context is warm. al noor call at 15:00. want the brief?"), reduced ? 400 : 2600);
 
   const stream = document.getElementById("stream");
   const bar = document.getElementById("bar");
@@ -348,15 +348,16 @@
       steps: [
         ["intent", "meeting preparation → <b>al noor hotels</b>", "ctx"],
         ["context", 'pulled 6 facts · <span class="hit">Hassan</span>, repeat client · two projects delivered · pays on time', "ctx"],
-        ["rule", '<span class="rule">standing rule: hotels set budgets before Ramadan — lead with the retainer, not a one off</span>', "ctx"],
+        ["rule", '<span class="rule">standing rule: hotels set budgets before Ramadan, so lead with the retainer, not a one off</span>', "ctx"],
         ["skills", 'search_skills("client discovery call brief") → <span class="hit">discovery-call-prep</span> <span class="score">0.92</span> · stakeholder-mapping <span class="score">0.81</span>', "skill"],
         ["fetch", "get_skill(discovery-call-prep) · 1 of 89,267 loaded", "skill"],
+        ["read", 'read_file <span class="hit">clients/al-noor/history.md</span> · 2 projects, both delivered', "ctx"],
       ],
-      card: `<h3>Al Noor — call brief</h3>
+      card: `<h3>Al Noor, call brief</h3>
         <p><b>Hassan</b> is a repeat client, which changes the posture: deepen, don't pitch.</p>
         <ul>
-          <li>Open with the <b>maintenance retainer</b> — their budget window closes before Ramadan</li>
-          <li>The kitchen ordering portal idea he mentioned in June is still unanswered — bring it</li>
+          <li>Open with the <b>maintenance retainer</b>, because their budget window closes before Ramadan</li>
+          <li>The kitchen ordering portal idea he mentioned in June is still unanswered, bring it</li>
           <li>Do not discount: he has never asked, and offering teaches him to</li>
         </ul>`,
     },
@@ -368,9 +369,10 @@
         ["intent", "follow up → <b>greenbay logistics portal</b>", "ctx"],
         ["context", 'milestone 2 delivered and signed off · invoice terms on file · <span class="hit">Fatima</span> approves payments', "ctx"],
         ["skills", 'search_skills("client milestone follow up email") → <span class="hit">payment-follow-up</span> <span class="score">0.89</span> · client-comms-tone <span class="score">0.77</span>', "skill"],
+        ["read", 'read_file <span class="hit">northline/greenbay/milestone-2-signoff.pdf</span>', "ctx"],
         ["draft", "drafted in your voice · references the signed schedule", "skill"],
       ],
-      card: `<h3>GreenBay — invoice nudge drafted</h3>
+      card: `<h3>GreenBay, invoice nudge drafted</h3>
         <p>Firm but warm, addressed to Fatima, references the signed milestone. Nothing sends without you.</p>`,
       approval: "send email → greenbay logistics (mutating action)",
     },
@@ -380,9 +382,10 @@
       steps: [
         ["intent", "status query → <b>pulse member app</b>", "ctx"],
         ["context", "beta running · 240 testers · crash reports resolved last week", "ctx"],
-        ["memory", 'open item: <span class="hit">app store listing copy</span> — waiting on brand photos', "ctx"],
+        ["memory", 'open item: <span class="hit">app store listing copy</span>, waiting on brand photos', "ctx"],
+        ["read", 'read_file <span class="hit">pulse/beta/crash-report-week-33.md</span> · zero new crashes', "ctx"],
       ],
-      card: `<h3>Member app — where it stands</h3>
+      card: `<h3>Member app, where it stands</h3>
         <p>Beta is healthy: <b>240 testers, crash free for nine days.</b> The launch gate is the store listing, which waits on the brand shoot. Want me to brief the photographer today?</p>`,
     },
   };
@@ -401,7 +404,7 @@
   function runEmail() {
     stream.innerHTML = "";
     bar.classList.add("live");
-    say("which inbox — or both?");
+    say("which inbox, or both?");
     const q = document.createElement("div");
     q.className = "approval";
     q.style.borderColor = "var(--line-strong)";
@@ -419,10 +422,10 @@
         setTimeout(() => {
           const c = document.createElement("div");
           c.className = "card";
-          c.innerHTML = `<h3>Inbox — what actually matters</h3>
+          c.innerHTML = `<h3>Inbox, what actually matters</h3>
             <ul>
-              <li><b>Hassan</b> confirmed today 15:00 — brief is ready when you are</li>
-              <li><b>Fatima</b> asked for the milestone invoice — draft waiting in the ring</li>
+              <li><b>Hassan</b> confirmed today 15:00. brief is ready when you are</li>
+              <li><b>Fatima</b> asked for the milestone invoice. draft waiting in the ring</li>
               <li><b>Omar</b> needs a yes on the membership campaign before Thursday</li>
             </ul>`;
           stream.appendChild(c);
@@ -436,12 +439,12 @@
   function run(name) {
     if (name === "email") { runEmail(); return; }
     const d = demos[name];
-    if (!d) { say("this demo has four scripted commands — your deployment answers anything."); return; }
+    if (!d) { say("this demo has four scripted commands. your deployment answers anything."); return; }
     stream.innerHTML = "";
     bar.classList.add("live");
     lit = new Set(d.lights);
     document.getElementById("focusLabel").textContent = d.focus;
-    say("working — context first, skills second.");
+    say("working. context first, skills second.");
     d.steps.forEach(addStep);
     const total = reduced ? 100 : d.steps.length * 550 + 500;
     setTimeout(() => {
@@ -455,7 +458,7 @@
         a.innerHTML = '<span class="who">ring · ' + d.approval + '</span>' +
           '<button class="yes">approve</button><button class="hold">hold</button>';
         a.querySelector(".yes").onclick = () => { a.innerHTML = '<span class="done">✓ sent · logged</span>'; say("sent. greenbay thread updated in the graph."); };
-        a.querySelector(".hold").onclick = () => { a.innerHTML = '<span class="done" style="color:var(--warn)">held — parked in outbox</span>'; say("held. it will not move without you."); };
+        a.querySelector(".hold").onclick = () => { a.innerHTML = '<span class="done" style="color:var(--warn)">held, parked in outbox</span>'; say("held. it will not move without you."); };
         stream.appendChild(a);
       } else {
         say("done. anything else?");

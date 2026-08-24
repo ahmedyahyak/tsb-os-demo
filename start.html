@@ -120,7 +120,7 @@
   <!-- STEP 1 -->
   <section class="stage on" id="s1">
     <h2>Choose your starting point</h2>
-    <p class="sub">every plan grows — departments can be added any time</p>
+    <p class="sub">every plan grows. departments can be added any time</p>
     <div class="plans" id="plans">
       <div class="plan" data-plan="Founder OS" data-price="$550/mo · $5,500 setup" data-max="3">
         <div class="nm">Founder OS</div><div class="pr">$550</div><div class="pu">per month · setup $5,500</div>
@@ -141,7 +141,7 @@
   <!-- STEP 2 -->
   <section class="stage" id="s2">
     <h2>Pick your departments</h2>
-    <p class="sub" id="depSub">choose what your structure needs — add your own if it is missing</p>
+    <p class="sub" id="depSub">choose what your structure needs. add your own if it is missing</p>
     <div class="chips" id="deps">
       <span class="chip sel">personal assistant</span>
       <span class="chip sel">marketing</span>
@@ -166,7 +166,7 @@
   <!-- STEP 3 -->
   <section class="stage" id="s3">
     <h2>How your business runs</h2>
-    <p class="sub">short answers are fine — the real depth happens on the setup call</p>
+    <p class="sub">short answers are fine. the real depth happens on the setup call</p>
     <div class="row2">
       <div class="q"><label>Your name</label><input type="text" id="qName" placeholder="e.g. Layla Hassan"></div>
       <div class="q"><label>Email · where your reply arrives</label><input type="text" id="qEmail" placeholder="you@company.com"></div>
@@ -208,7 +208,7 @@
       <header><span>madar blueprint</span><span id="bpDate"></span></header>
       <div class="bp-body" id="bpBody"></div>
     </div>
-    <p class="bp-note" id="bpStatus">send the blueprint and it lands with our team instantly — you get a personal reply with the booking link within minutes. Our own OS answers you; that is the product.</p>
+    <p class="bp-note" id="bpStatus">send the blueprint and it lands with our team instantly. you get a personal reply with the booking link within minutes. Our own OS answers you; that is the product.</p>
     <div class="ctas">
       <button class="btn primary" id="sendBtn" onclick="sendLead()">Send blueprint + book the call</button>
       <a class="btn ghost" id="mailBtn" href="#">Email it manually instead</a>
@@ -247,7 +247,7 @@
     const n = selDeps().length;
     document.getElementById("depHint").textContent =
       state.max < 99 && n > state.max
-        ? "Founder OS includes " + state.max + " departments — you picked " + n + ". Keep them all and we will quote the difference on the call."
+        ? "Founder OS includes " + state.max + " departments, you picked " + n + ". Keep them all and we will quote the difference on the call."
         : n + " departments selected · " + state.plan;
   }
   document.querySelectorAll("#deps .chip:not(.custom), #channels .chip").forEach(c => {
@@ -287,14 +287,14 @@
     document.getElementById("bpDate").textContent = new Date().toISOString().slice(0,10);
     const rows = [
       ["plan", "<b>" + state.plan + "</b> · " + state.price],
-      ["departments", deps.map(d => "<b>" + d + "</b>").join(" · ") + " <span style='color:var(--faint)'>(" + deps.length + " — grows any time)</span>"],
-      ["company", (v("qCompany") || "—") + (v("qIndustry") ? " · " + v("qIndustry") : "")],
-      ["team", (v("qTeam") || "—") + (v("qGeo") ? " · " + v("qGeo") : "")],
-      ["profession", v("qProfession") || "—"],
-      ["tools", v("qTools") || "—"],
+      ["departments", deps.map(d => "<b>" + d + "</b>").join(" · ") + " <span style='color:var(--faint)'>(" + deps.length + ", grows any time)</span>"],
+      ["company", (v("qCompany") || "not set") + (v("qIndustry") ? " · " + v("qIndustry") : "")],
+      ["team", (v("qTeam") || "not set") + (v("qGeo") ? " · " + v("qGeo") : "")],
+      ["profession", v("qProfession") || "not set"],
+      ["tools", v("qTools") || "not set"],
       ["infrastructure", document.querySelector("#infraChips .chip.sel").textContent],
-      ["channels", chans.join(" · ") || "—"],
-      ["biggest drain", v("qPain") || "—"],
+      ["channels", chans.join(" · ") || "not set"],
+      ["biggest drain", v("qPain") || "not set"],
     ];
     document.getElementById("bpBody").innerHTML = rows.map(([k, val]) =>
       '<div class="bp-row"><span class="k">' + k + '</span><span class="v">' + val + "</span></div>").join("");
@@ -339,13 +339,13 @@
         body: JSON.stringify(bp),
       });
       if (!r.ok) throw new Error();
-      st.textContent = "blueprint received. your reply is on its way — and you can grab a slot right now:";
+      st.textContent = "blueprint received. your reply is on its way, and you can grab a slot right now:";
       st.style.color = "var(--ok)";
       btn.textContent = "Book the call now";
       btn.disabled = false;
       btn.onclick = () => open(CALENDLY, "_blank");
     } catch {
-      st.textContent = "could not send just now — use the email button instead, or book directly: " + CALENDLY;
+      st.textContent = "could not send just now, use the email button instead, or book directly: " + CALENDLY;
       st.style.color = "var(--copper)";
       btn.textContent = "Send blueprint + book the call";
       btn.disabled = false;
