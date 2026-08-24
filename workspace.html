@@ -46,10 +46,10 @@
   .bootlog{margin-top:16px;font-family:var(--mono);font-size:10.5px;color:var(--faint);height:14px}
 
   /* ---------------------------------------------------------- shell */
-  .app{display:grid;grid-template-columns:236px 1fr;height:100vh;opacity:0;transition:opacity .6s var(--ease) .1s}
+  .app{display:grid;grid-template-columns:236px 1fr;height:100vh;overflow:hidden;opacity:0;transition:opacity .6s var(--ease) .1s}
   .app.in{opacity:1}
 
-  aside{background:var(--deep);border-right:1px solid var(--line);display:flex;flex-direction:column;min-height:0}
+  aside{background:var(--deep);border-right:1px solid var(--line);display:flex;flex-direction:column;min-height:0;min-width:0}
   .brand{display:flex;align-items:center;gap:10px;padding:17px 18px;border-bottom:1px solid var(--line)}
   .brand svg{flex:none}
   .brand .wm{font-family:var(--display);font-size:11.5px;letter-spacing:.34em;text-transform:uppercase;font-weight:600}
@@ -198,12 +198,12 @@
      founder actually hands to somebody across a table. */
   @media (max-width:760px){
     .app{grid-template-columns:1fr;grid-template-rows:auto 1fr}
-    aside{flex-direction:row;flex-wrap:wrap;align-items:center;border-right:0;border-bottom:1px solid var(--line)}
+    aside{flex-direction:row;flex-wrap:wrap;align-items:center;border-right:0;border-bottom:1px solid var(--line);min-width:0;overflow:hidden}
     .brand{border-bottom:0;flex:none;padding:11px 14px 11px 15px}
     .tenant{border-bottom:0;flex:1;padding:11px 15px 11px 0;justify-content:flex-end}
     .tenant .av{width:25px;height:25px;font-size:10px}
     .sidefoot,.navlab{display:none}
-    nav{flex:none;flex-basis:100%;display:flex;flex-direction:row;gap:5px;overflow-x:auto;padding:0 11px 9px;scrollbar-width:none}
+    nav{flex:none;flex-basis:100%;min-width:0;max-width:100%;display:flex;flex-direction:row;gap:5px;overflow-x:auto;padding:0 11px 9px;scrollbar-width:none}
     nav::-webkit-scrollbar{display:none}
     .nb{width:auto;flex:none;white-space:nowrap;padding:7px 12px;font-size:12.5px;border-radius:20px;border:1px solid var(--line)}
     .nb.on{border-color:var(--line-3)}
@@ -215,6 +215,7 @@
     .g4,.g2,.g2e,.kan{grid-template-columns:1fr}
     .scroll{padding:18px 15px 36px}
     .vh h1{font-size:22px}
+    .vh p{max-width:none}
     .apv{flex-wrap:wrap}
     .apv .act{flex-basis:100%;justify-content:flex-start}
     .ev{grid-template-columns:46px 74px 1fr;gap:8px;font-size:10.5px}
