@@ -35,17 +35,45 @@ export default async function handler(req, res) {
     Status: "new",
     Received: new Date().toISOString(),
   };
-  const r = await fetch(`https://api.airtable.com/v0/${BASE}/${TABLE}`, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${process.env.AIRTABLE_API_KEY}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ records: [{ fields }], typecast: true }),
-  });
-  if (!r.ok) {
-    res.status(502).json({ error: "could not file the lead" });
-    return;
+  // Airtable allows five requests a second per base and answers a burst with
+  // 429. Without a retry a single unlucky second loses a real lead: the
+  // prospect sees an error and we never learn they existed. Retry the
+  // transient codes quickly, staying well inside the function timeout.
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  const post = () =>
+    fetch(`https://api.airtable.com/v0/${BASE}/${TABLE}`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${process.env.AIRTABLE_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ records: [{ fields }], typecast: true }),
+    });
+
+  let r;
+  for (const wait of [400, 1200, 2500]) {
+    try {
+      r = await post();
+    } catch {
+      r = null;
+    }
+    if (r && r.ok) {
+      res.status(200).json({ ok: true });
+      return;
+    }
+    // Only 429 and 5xx are worth repeating. A 401 or a bad field name will
+    // fail identically every time, so fall straight through to the error.
+    if (r && r.status !== 429 && r.status < 500) break;
+    await sleep(wait);
   }
-  res.status(200).json({ ok: true });
+
+  try {
+    const detail = r ? `${r.status} ${(await r.text()).slice(0, 200)}` : "network";
+    console.error("lead intake failed:", detail, "|", email, fields.Company);
+  } catch {
+    console.error("lead intake failed for", email);
+  }
+  // 502 tells the wizard to surface its email fallback, so the blueprint
+  // still reaches a human even when the base is unreachable.
+  res.status(502).json({ error: "could not file the lead" });
 }

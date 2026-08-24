@@ -351,10 +351,14 @@
       btn.disabled = false;
       btn.onclick = () => open(CALENDLY, "_blank");
     } catch {
-      st.textContent = "could not send just now, use the email button instead, or book directly: " + CALENDLY;
+      // A sentence the visitor has to notice is not a fallback. Make the
+      // pre filled email the button they are already looking at, so the
+      // blueprint reaches a human either way.
+      st.textContent = "we could not file that automatically. your blueprint is ready to send by email instead, nothing is lost:";
       st.style.color = "var(--copper)";
-      btn.textContent = "Send blueprint + book the call";
+      btn.textContent = "Email my blueprint instead";
       btn.disabled = false;
+      btn.onclick = () => { location.href = document.getElementById("mailBtn").href; };
     }
   }
 
