@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Products · Madar OS by TSB Labs</title>
+<meta name="description" content="Founder OS, Business OS and Enterprise OS compared line by line: departments, systems of record, integrations, security and support. Master pricing in US dollars.">
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<meta property="og:title" content="Madar OS products · staff, not software">
+<meta property="og:description" content="Three deployments of one operating system, compared honestly. Every plan carries the permission ring, the context graph, and staff that sit an exam before they work.">
+<meta property="og:type" content="website">
+<style>
+  :root {
+    --void: #07090D; --panel: #10141B; --panel-2: #151A23;
+    --line: rgba(155,193,224,0.13); --line-strong: rgba(155,193,224,0.28);
+    --copper: #F2926B; --ice: #9BC1E0; --text: #E6EAF2; --dim: #7C8698; --faint: #4A5364;
+    --ok: #7FBF8E;
+    --display: "Futura", "Century Gothic", "Avenir Next", sans-serif;
+    --body: "Avenir Next", "Avenir", -apple-system, "Segoe UI", sans-serif;
+    --mono: ui-monospace, "SF Mono", "Menlo", monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { background: var(--void); }
+  body { font-family: var(--body); color: var(--text); overflow-x: hidden; }
+  .wrap { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; padding: 0 28px; }
+
+  .nav { display: flex; align-items: baseline; gap: 18px; padding: 26px 0; }
+  .wordmark { font-family: var(--display); font-size: 13px; letter-spacing: 0.42em; text-transform: uppercase; }
+  .wordmark em { font-style: normal; color: var(--copper); }
+  .nav .by { font-family: var(--mono); font-size: 11px; color: var(--faint); }
+  .nav .gap { flex: 1; }
+  .nav a { font-family: var(--mono); font-size: 12px; color: var(--dim); text-decoration: none; }
+  .nav a:hover { color: var(--copper); }
+
+  .hero { padding: 9vh 0 6vh; max-width: 820px; }
+  .kick { font-family: var(--mono); font-size: 12px; color: var(--copper); letter-spacing: 0.18em; text-transform: uppercase; }
+  h1 { font-family: var(--display); font-weight: 500; font-size: clamp(32px, 5.4vw, 56px); line-height: 1.1; margin-top: 18px; text-wrap: balance; }
+  h1 .soft { color: var(--faint); }
+  .lede { margin-top: 20px; font-size: 17.5px; line-height: 1.75; color: var(--dim); max-width: 62ch; }
+  .lede b { color: var(--text); font-weight: 500; }
+
+  section { padding: 56px 0; border-top: 1px solid var(--line); }
+  .eyebrow { font-family: var(--display); font-size: 11px; letter-spacing: 0.34em; text-transform: uppercase; color: var(--dim); }
+  h2 { font-family: var(--display); font-weight: 500; font-size: clamp(24px, 3.4vw, 34px); margin-top: 12px; }
+  .sub { margin-top: 12px; color: var(--dim); max-width: 66ch; line-height: 1.7; }
+
+  .plans { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 18px; margin-top: 36px; }
+  .plan { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 26px; display: flex; flex-direction: column; gap: 14px; position: relative; }
+  .plan.rec { border-color: rgba(242,146,107,0.45); }
+  .plan.rec::before { content: "MOST DEPLOYED FIRST"; position: absolute; top: -9px; left: 22px; font-family: var(--mono); font-size: 9px; letter-spacing: 0.16em; background: var(--copper); color: var(--void); border-radius: 5px; padding: 3px 8px; }
+  .plan h3 { font-family: var(--display); font-size: 19px; letter-spacing: 0.04em; }
+  .plan .for { font-family: var(--mono); font-size: 11.5px; color: var(--copper); letter-spacing: 0.08em; }
+  .plan .price { font-family: var(--mono); font-size: 15px; color: var(--text); }
+  .plan .price small { display: block; color: var(--faint); font-size: 10.5px; letter-spacing: 0.1em; margin-top: 3px; }
+  .plan p { font-size: 14px; color: var(--dim); line-height: 1.65; }
+  .plan ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .plan li { font-size: 13.5px; color: var(--dim); padding-left: 18px; position: relative; line-height: 1.5; }
+  .plan li::before { content: ""; position: absolute; left: 2px; top: 8px; width: 5px; height: 5px; border-radius: 2px; background: var(--copper); }
+  .plan li b { color: var(--text); font-weight: 500; }
+  .plan .cta { margin-top: auto; font-family: var(--display); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; text-decoration: none; text-align: center; border-radius: 9px; padding: 13px 18px; color: var(--dim); border: 1px solid var(--line-strong); }
+  .plan.rec .cta { color: var(--void); background: var(--copper); border: 0; }
+  .plan .cta:hover { filter: brightness(1.12); }
+
+  .matrix-scroll { overflow-x: auto; margin-top: 34px; border: 1px solid var(--line); border-radius: 14px; }
+  table { width: 100%; min-width: 720px; border-collapse: collapse; background: var(--panel); }
+  th, td { padding: 13px 16px; text-align: left; font-size: 13.5px; border-bottom: 1px solid var(--line); }
+  thead th { font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--copper); background: var(--panel-2); }
+  tbody th { font-weight: 500; color: var(--text); font-size: 13.5px; width: 34%; }
+  td { color: var(--dim); font-family: var(--mono); font-size: 12.5px; }
+  td.y { color: var(--ok); }
+  td.n { color: var(--faint); }
+  tr.grp th { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--faint); background: var(--panel-2); padding-top: 16px; }
+
+  .pillars { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 18px; margin-top: 34px; }
+  .pillar { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 22px; }
+  .pillar h4 { font-family: var(--display); font-size: 14px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--copper); margin-bottom: 10px; }
+  .pillar p { font-size: 13.5px; color: var(--dim); line-height: 1.65; }
+  .pillar p b { color: var(--text); font-weight: 500; }
+
+  .note { margin-top: 30px; font-size: 13.5px; color: var(--dim); max-width: 72ch; border-left: 2px solid var(--copper); padding-left: 16px; line-height: 1.7; }
+  .ctas { display: flex; gap: 14px; margin-top: 34px; flex-wrap: wrap; }
+  .btn { font-family: var(--display); font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase; text-decoration: none; border-radius: 10px; padding: 16px 28px; }
+  .btn.primary { color: var(--void); background: var(--copper); box-shadow: 0 0 44px rgba(242,146,107,0.25); }
+  .btn.ghost { color: var(--dim); border: 1px solid var(--line-strong); }
+  .btn:hover { filter: brightness(1.12); }
+  footer { padding: 44px 0 60px; border-top: 1px solid var(--line); font-family: var(--mono); font-size: 11px; color: var(--faint); display: flex; gap: 18px; flex-wrap: wrap; }
+  footer a { color: var(--dim); text-decoration: none; }
+  @media (max-width: 640px) { .plan.rec::before { left: 14px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <nav class="nav">
+    <span class="wordmark">madar<em>_os</em></span>
+    <span class="by">by TSB Labs</span>
+    <span class="gap"></span>
+    <a href="/">overview</a>
+    <a href="os.html">demo</a>
+    <a href="start.html">design yours</a>
+  </nav>
+
+  <header class="hero">
+    <div class="kick">Products</div>
+    <h1>One operating system.<br><span class="soft">Three ways to deploy it.</span></h1>
+    <p class="lede">Every Madar deployment is the same product underneath: departments of AI staff, a memory graph of your business, and a permission ring that stops anything irreversible until you approve it. The plans differ in <b>how much company it runs</b> and <b>where it lives</b>, not in how safe it is. Master pricing in US dollars; AED and OMR equivalents are fixed in your currency at signature.</p>
+  </header>
+
+  <section>
+    <div class="eyebrow">The line</div>
+    <h2>Founder, Business, Enterprise.</h2>
+    <div class="plans">
+      <div class="plan">
+        <h3>Founder OS</h3>
+        <div class="for">FOR A SOLO FOUNDER OR SMALL TEAM</div>
+        <div class="price">$5,500 setup · $550 per month<small>ANNUAL PREPAY: TWELVE MONTHS CHARGED AS TEN</small></div>
+        <p>The owner stops being the switchboard. A personal assistant plus two departments of your choice carry the repeatable half of your day.</p>
+        <ul>
+          <li><b>Personal assistant plus two departments</b>, chosen for your worst pain first</li>
+          <li><b>Email wired in</b>: reads, drafts, chases, through the ring</li>
+          <li>Context graph encoded from your business before it says a word</li>
+          <li>Monthly tune up as your rules and priorities change</li>
+        </ul>
+        <a class="cta" href="https://calendly.com/ahmedyahyak/20mins" target="_blank" rel="noopener">Talk about Founder OS</a>
+      </div>
+
+      <div class="plan rec">
+        <h3>Business OS</h3>
+        <div class="for">FOR COMPANIES OF ROUGHLY 5 TO 200 STAFF</div>
+        <div class="price">$13,500 setup · $1,650 per month<small>ANNUAL PREPAY: TWELVE MONTHS CHARGED AS TEN</small></div>
+        <p>The full department team under one coordinator, with Mission Control showing what is running, what waits on you, and what is blocked.</p>
+        <ul>
+          <li><b>The full department bench</b>: sales, marketing, finance, support, people, operations and the technical roles</li>
+          <li><b>Email and WhatsApp wired in</b>, WhatsApp through the official Business Platform</li>
+          <li><b>Mission Control</b>, the live board of everything in motion</li>
+          <li><b>Monthly evolution sprint</b>: the system learns your latest rules, clients and priorities</li>
+          <li>Priority support, one working day</li>
+        </ul>
+        <a class="cta" href="https://calendly.com/ahmedyahyak/20mins" target="_blank" rel="noopener">Talk about Business OS</a>
+      </div>
+
+      <div class="plan">
+        <h3>Enterprise OS</h3>
+        <div class="for">FOR ORGANISATIONS WITH COMPLIANCE TO ANSWER TO</div>
+        <div class="price">from $35,000 setup · from $5,500 per month<small>SCOPED PER ORGANISATION, SERVICE AGREEMENT INCLUDED</small></div>
+        <p>The same operating system, deployed inside your walls. Your infrastructure, your data residency, your ERP wired in, your auditors satisfied.</p>
+        <ul>
+          <li><b>Private deployment on your own infrastructure</b>, nothing leaves your estate</li>
+          <li><b>Custom integrations into your ERP and CRM</b>: Dynamics, SAP Business One, Odoo, or what you run</li>
+          <li>Compliance and confidentiality by design, aligned to your policies</li>
+          <li>Departments shaped to your org chart, added any time</li>
+          <li>Service agreement with same day response</li>
+        </ul>
+        <a class="cta" href="https://calendly.com/ahmedyahyak/20mins" target="_blank" rel="noopener">Talk about Enterprise OS</a>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="eyebrow">Side by side</div>
+    <h2>The comparison, line by line.</h2>
+    <p class="sub">What every plan carries and where they differ. If a line matters to your auditors, ask us to demonstrate it live rather than take the table's word.</p>
+    <div class="matrix-scroll">
+    <table>
+      <thead><tr><th>Capability</th><th>Founder OS</th><th>Business OS</th><th>Enterprise OS</th></tr></thead>
+      <tbody>
+        <tr class="grp"><th colspan="4">The staff</th></tr>
+        <tr><th>Departments included</th><td>assistant + 2 of your choice</td><td class="y">full bench</td><td class="y">full bench, shaped to your org chart</td></tr>
+        <tr><th>Staff examined before touching your business</th><td class="y">yes</td><td class="y">yes</td><td class="y">yes, transcripts kept with the deployment</td></tr>
+        <tr><th>Departments added later</th><td class="y">any time</td><td class="y">any time</td><td class="y">any time</td></tr>
+        <tr class="grp"><th colspan="4">Control and security</th></tr>
+        <tr><th>Permission ring on every send, post and payment</th><td class="y">yes</td><td class="y">yes</td><td class="y">yes</td></tr>
+        <tr><th>Live activity stream naming what is touched</th><td class="y">yes</td><td class="y">yes</td><td class="y">yes</td></tr>
+        <tr><th>Approvals from your phone</th><td class="y">yes</td><td class="y">yes</td><td class="y">yes</td></tr>
+        <tr><th>Deployment location</th><td>managed</td><td>managed</td><td class="y">your own infrastructure</td></tr>
+        <tr><th>Data residency under your control</th><td class="n">managed</td><td class="n">managed</td><td class="y">yes, nothing leaves your estate</td></tr>
+        <tr class="grp"><th colspan="4">Memory and systems</th></tr>
+        <tr><th>Context graph of your business</th><td class="y">yes</td><td class="y">yes</td><td class="y">yes</td></tr>
+        <tr><th>Systems of record for departments without tools</th><td class="y">included with departments</td><td class="y">included with departments</td><td class="y">included with departments</td></tr>
+        <tr><th>Data import from your existing tools</th><td class="y">CSV from any system</td><td class="y">CSV from any system</td><td class="y">CSV plus direct integrations</td></tr>
+        <tr><th>Nightly backups with rehearsed restore</th><td class="y">yes</td><td class="y">yes</td><td class="y">yes, on your infrastructure</td></tr>
+        <tr class="grp"><th colspan="4">Channels and integrations</th></tr>
+        <tr><th>Email</th><td class="y">wired in</td><td class="y">wired in</td><td class="y">wired in</td></tr>
+        <tr><th>WhatsApp, official Business Platform</th><td class="n">on request</td><td class="y">wired in</td><td class="y">wired in</td></tr>
+        <tr><th>Connectors to your stack</th><td>from the catalog</td><td class="y">from the catalog</td><td class="y">catalog plus custom ERP and CRM work</td></tr>
+        <tr class="grp"><th colspan="4">Care</th></tr>
+        <tr><th>Self healing, checks every five minutes</th><td class="y">yes</td><td class="y">yes</td><td class="y">yes</td></tr>
+        <tr><th>Ongoing improvement</th><td>monthly tune up</td><td class="y">monthly evolution sprint</td><td class="y">per service agreement</td></tr>
+        <tr><th>Support response</th><td>standard</td><td class="y">one working day</td><td class="y">same day, under agreement</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="eyebrow">For the enterprise buyer</div>
+    <h2>Why an organisation with auditors says yes.</h2>
+    <div class="pillars">
+      <div class="pillar"><h4>Nothing irreversible without approval</h4>
+        <p>Every send, post and payment stops at the permission ring until a named human approves it. <b>The ordering of that check is covered by automated tests</b>, including the case where trusted mode must still refuse a forbidden action. Control is enforced, not promised.</p></div>
+      <div class="pillar"><h4>Your data stays yours</h4>
+        <p>Enterprise OS deploys on your infrastructure: your servers, your region, your residency rules. The memory graph, the ledgers and the backups live inside your estate. <b>Leaving takes your data with you</b>, because it never left.</p></div>
+      <div class="pillar"><h4>Staff that passed an exam</h4>
+        <p>Every department is briefed to its craft, given written boundaries, and <b>examined before it touches your business</b>. Failing hires are corrected and retake. The transcripts are kept with your deployment, which is more than most human onboarding leaves behind.</p></div>
+      <div class="pillar"><h4>Watchable, in real time</h4>
+        <p>The live stream names what the system is touching: the file, the record, the recipient. <b>A wrong move is catchable while it happens</b>, not discovered in an audit three months later. Credentials are never displayed, by design.</p></div>
+      <div class="pillar"><h4>It integrates, it does not replace</h4>
+        <p>Your ERP stays. Dynamics, SAP Business One, Odoo, Xero, your CRM and your storefronts connect through official interfaces on your own licences. <b>We operate your systems; we do not ask you to abandon them.</b></p></div>
+      <div class="pillar"><h4>Proven on ourselves first</h4>
+        <p>TSB Labs runs on Madar OS daily: its CRM, its outreach, its follow ups, its own board reviews. <b>We are deployment zero</b>, and the measurements, including the unproven parts, are published in our case studies.</p></div>
+    </div>
+    <div class="note">What we will not claim: certifications we do not hold, uptime histories we have not accumulated, and reference customers that do not exist yet. Enterprise OS is early, the engineering discipline behind it is real, and the fastest way to judge it is to watch it run our company live on a call.</div>
+    <div class="ctas">
+      <a class="btn primary" href="https://calendly.com/ahmedyahyak/20mins" target="_blank" rel="noopener">Book an enterprise conversation</a>
+      <a class="btn ghost" href="os.html">Try the interactive demo</a>
+    </div>
+  </section>
+
+  <footer>
+    <span>madar_os · by TSB Labs</span>
+    <a href="/">overview</a>
+    <a href="os.html">demo</a>
+    <a href="start.html">design yours</a>
+    <a href="https://tsb-labs-portfolio.vercel.app/case-studies.html">case studies</a>
+  </footer>
+
+</div>
+</body>
+</html>
