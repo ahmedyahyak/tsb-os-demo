@@ -55,6 +55,30 @@
   .pl p b{color:var(--text);font-weight:500}
   @media(max-width:900px){.pillars{grid-template-columns:repeat(2,1fr)}}
   @media(max-width:620px){.pillars{grid-template-columns:1fr}}
+
+  /* Phone readability. This lives in the page rather than in madar.css because
+     the page style block loads after the stylesheet and was overriding it: the
+     first attempt at this fix changed nothing at all. Cascade order, not
+     specificity. */
+  @media (max-width:640px){
+    .nav .by{font-size:11.5px}
+    .label,.kick{font-size:11.5px!important;letter-spacing:.16em}
+    .under{font-size:12px}
+    .live .lh .t,.live .lf{font-size:11.5px}
+    .lr{font-size:12.5px;grid-template-columns:52px 1fr;gap:9px}
+    .lr .a{font-size:11.5px}
+    .glyph,.chip{font-size:12px}
+    .integ h4{font-size:11.5px}
+    .frow .k{font-size:11.5px}
+    .frow .v{font-size:14.5px}
+    .stat .k{font-size:12px}
+    .proof{font-size:15.5px}
+    .plan .for{font-size:11.5px}
+    .plan .price small{font-size:11px;letter-spacing:.06em}
+    .plan li,.pl p{font-size:14px}
+    td,th{font-size:12.5px}
+    footer,.foot,.note{font-size:12.5px}
+  }
 </style>
 </head>
 <body>
