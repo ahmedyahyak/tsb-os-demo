@@ -50,6 +50,31 @@
   function clamp(v, a, b) { return v < a ? a : v > b ? b : v; }
   function lerp(a, b, t) { return a + (b - a) * t; }
 
+  /* Blends two colours so a body can be given a lit side and a dark side.
+     Reads #rgb, #rrggbb and rgb(), because these come from CSS tokens and the
+     browser is free to hand any of those back. */
+  function rgbOf(c) {
+    c = String(c).trim();
+    var m = c.match(/^#([0-9a-f]{3})$/i);
+    if (m) return [0, 1, 2].map(function (i) { return parseInt(m[1][i] + m[1][i], 16); });
+    m = c.match(/^#([0-9a-f]{6})$/i);
+    if (m) return [0, 2, 4].map(function (i) { return parseInt(m[1].substr(i, 2), 16); });
+    m = c.match(/(-?[\d.]+)\D+(-?[\d.]+)\D+(-?[\d.]+)/);
+    if (m) return [+m[1], +m[2], +m[3]];
+    return [155, 193, 224];
+  }
+  var mixCache = {};
+  function mix(a, b, t) {
+    var k = a + '|' + b + '|' + t;
+    if (mixCache[k]) return mixCache[k];
+    var x = rgbOf(a), y = rgbOf(b);
+    var o = 'rgb(' + [0, 1, 2].map(function (i) {
+      return Math.round(lerp(x[i], y[i], t));
+    }).join(',') + ')';
+    mixCache[k] = o;
+    return o;
+  }
+
   /* The same sample company the rest of the site uses, so the story holds. */
   var BODIES = [
     { l: 'Marina Foods',  ring: 0, k: 'company', d: 'Client since March. Pays on 30 days, always late by four. Omar is the contact, not Hassan.' },
@@ -117,6 +142,11 @@
        other and read as a broken render. Narrow screens label only what is
        live, and tapping a dot is how you name the rest. */
     view.dense = W >= 700;
+    /* Labels are clamped to the box the scene has landed in, not to the
+       viewport. The canvas is full width now, so a viewport clamp let a label
+       on the right hand side run underneath the panel column. */
+    view.L = lerp(8, hr.left + 8, pe);
+    view.R = lerp(vw - 8, hr.right - 8, pe);
     view.on = p > 0.72;                                 // interaction gate
     /* Nothing on screen, nothing to draw. */
     view.skip = view.cy < -vh * 0.9 || view.cy > vh * 1.9;
@@ -147,17 +177,28 @@
     var faint = token('--faint') || '#7A8497';
     var A = view.alpha;
 
-    /* the rings themselves, drawn as paths so the geometry reads as orbit */
+    /* The rings, drawn segment by segment rather than as one closed path.
+       A path stroked at a single alpha reads as a flat ellipse, because the
+       near half and the far half look identical and nothing tells the eye
+       which is which. Fading each segment by its own depth is what makes the
+       ring pass in front of and behind the centre, and it is most of the
+       reason this looks three dimensional at all. */
     RINGS.forEach(function (r, ri) {
-      ctx.beginPath();
+      var tl = 0.30 + ri * 0.16;
+      var prev = null;
       for (var t = 0; t <= 64; t++) {
         var a = (t / 64) * Math.PI * 2;
-        var tl = 0.30 + ri * 0.16;
         var p = project(Math.cos(a) * r, Math.sin(a) * r * Math.sin(tl) * 0.3, Math.sin(a) * r);
-        t === 0 ? ctx.moveTo(p.X, p.Y) : ctx.lineTo(p.X, p.Y);
+        if (prev) {
+          var depth = clamp((420 - (p.z + prev.z) / 2) / 260, 0, 1);
+          ctx.beginPath(); ctx.moveTo(prev.X, prev.Y); ctx.lineTo(p.X, p.Y);
+          ctx.strokeStyle = ice;
+          ctx.globalAlpha = (0.05 + depth * 0.17) * A;
+          ctx.lineWidth = 0.7 + depth * 0.7;
+          ctx.stroke();
+        }
+        prev = p;
       }
-      ctx.closePath();
-      ctx.strokeStyle = ice; ctx.globalAlpha = 0.13 * A; ctx.lineWidth = 1; ctx.stroke();
     });
     ctx.globalAlpha = 1;
 
@@ -182,10 +223,34 @@
          than as points of data. The floor keeps the far ones from vanishing. */
       var rad = clamp((live ? 5.4 : 3.4) * p.s * view.dot, 2.4, live ? 9 : 6.5);
       ctx.globalAlpha = Math.max(0.28, Math.min(1, (420 - p.z) / 200)) * A;
-      ctx.fillStyle = live ? copper : ice;
+      var col = live ? copper : ice;
+
+      /* A flat disc is a dot on a screen. A radial gradient with the light
+         off the top left is a small sphere, and it costs one gradient. */
+      var g = ctx.createRadialGradient(
+        p.X - rad * 0.34, p.Y - rad * 0.34, rad * 0.08, p.X, p.Y, rad);
+      g.addColorStop(0, mix(col, '#ffffff', 0.55));
+      g.addColorStop(0.55, col);
+      g.addColorStop(1, mix(col, '#000000', 0.34));
+      ctx.fillStyle = g;
       if (b.hot) { ctx.shadowColor = copper; ctx.shadowBlur = (10 + Math.sin(pulse) * 6) * A; }
       ctx.beginPath(); ctx.arc(p.X, p.Y, rad, 0, Math.PI * 2); ctx.fill();
       ctx.shadowBlur = 0;
+
+      /* Bloom, additively, so overlapping light adds up the way light does.
+         Only on what is lit and near, which keeps it a highlight rather than
+         a haze over the whole scene. */
+      if (live && p.z < 340) {
+        ctx.save();
+        ctx.globalCompositeOperation = 'lighter';
+        var bl = ctx.createRadialGradient(p.X, p.Y, rad * 0.5, p.X, p.Y, rad * 4.2);
+        bl.addColorStop(0, mix(col, '#000000', 0.62));
+        bl.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.globalAlpha = (0.5 + Math.sin(pulse) * 0.16) * A;
+        ctx.fillStyle = bl;
+        ctx.beginPath(); ctx.arc(p.X, p.Y, rad * 4.2, 0, Math.PI * 2); ctx.fill();
+        ctx.restore();
+      }
 
       /* Labels are the part that would turn the hero into noise, so they only
          arrive once the scene is most of the way into its box. */
@@ -197,17 +262,35 @@
         // body near the right edge is still readable instead of clipped.
         var lw = ctx.measureText(b.l).width;
         var lx = p.X + rad + 7;
-        if (lx + lw > W - 10) lx = p.X - rad - 7 - lw;
-        ctx.fillText(b.l, Math.max(8, lx), p.Y + 3.5);
+        if (lx + lw > view.R) lx = p.X - rad - 7 - lw;
+        ctx.fillText(b.l, clamp(lx, view.L, Math.max(view.L, view.R - lw)), p.Y + 3.5);
       }
       b._hit = { x: p.X, y: p.Y, r: Math.max(13, rad + 9) };
     });
 
     /* you, at the centre, and the ring that is the mark */
-    ctx.beginPath(); ctx.arc(c0.X, c0.Y, Math.min(17 * c0.s, 30), 0, Math.PI * 2);
+    var ringR = Math.min(17 * c0.s, 30);
+    var youR = Math.min(5.6 * c0.s * view.dot, 8);
+    ctx.beginPath(); ctx.arc(c0.X, c0.Y, ringR, 0, Math.PI * 2);
     ctx.strokeStyle = copper; ctx.globalAlpha = 0.34 * A; ctx.lineWidth = 1; ctx.stroke();
-    ctx.globalAlpha = A; ctx.fillStyle = copper;
-    ctx.beginPath(); ctx.arc(c0.X, c0.Y, Math.min(5.6 * c0.s * view.dot, 8), 0, Math.PI * 2); ctx.fill();
+    /* You are the only light source in the scene, so the centre gets the
+       bloom whether or not anything is waiting on you. */
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    var cg = ctx.createRadialGradient(c0.X, c0.Y, youR * 0.4, c0.X, c0.Y, ringR * 2.6);
+    cg.addColorStop(0, mix(copper, '#000000', 0.66));
+    cg.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.globalAlpha = 0.6 * A; ctx.fillStyle = cg;
+    ctx.beginPath(); ctx.arc(c0.X, c0.Y, ringR * 2.6, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
+    ctx.globalAlpha = A;
+    var yg = ctx.createRadialGradient(
+      c0.X - youR * 0.34, c0.Y - youR * 0.34, youR * 0.08, c0.X, c0.Y, youR);
+    yg.addColorStop(0, mix(copper, '#ffffff', 0.6));
+    yg.addColorStop(0.55, copper);
+    yg.addColorStop(1, mix(copper, '#000000', 0.3));
+    ctx.fillStyle = yg;
+    ctx.beginPath(); ctx.arc(c0.X, c0.Y, youR, 0, Math.PI * 2); ctx.fill();
     if (view.lab > 0.02) {
       ctx.globalAlpha = view.lab;
       ctx.font = '600 11px "IBM Plex Mono", ui-monospace, monospace';

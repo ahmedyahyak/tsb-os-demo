@@ -464,6 +464,26 @@
   })();
 })();
 </script>
+<!-- Lenis, 5KB gzipped, vendored not from a CDN. The orbit is driven by scroll
+     position, so how the scroll itself moves is part of how the scene reads: a
+     wheel notch jumps the scene, an eased scroll carries it. Touch is left
+     native on purpose. Taking over touch scrolling is what breaks momentum on
+     iOS, and the page must always scroll before it must scroll prettily.
+     Three.js was measured against this and rejected: 183KB gzipped to draw
+     twelve points and three rings, a 46x payload for a scene that would look
+     the same. -->
+<script defer src="/assets/vendor/lenis.min.js"></script>
 <script defer src="/assets/orbit.js"></script>
+<script>
+  window.addEventListener('load', function () {
+    if (!window.Lenis) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    /* madar.css sets scroll-behavior:smooth. Leaving it on while Lenis is
+       also easing the same scroll gives an anchor jump two eases fighting
+       each other, which lands short and then crawls. */
+    document.documentElement.style.scrollBehavior = 'auto';
+    new window.Lenis({ autoRaf: true, duration: 0.9, syncTouch: false });
+  });
+</script>
 </body>
 </html>

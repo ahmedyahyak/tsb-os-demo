@@ -106,7 +106,10 @@ const PROBE = `(async () => {
           if(getComputedStyle(q).overflowX==='visible')continue;
           var qb=q.getBoundingClientRect();
           lo=Math.max(lo,qb.left);hi=Math.min(hi,qb.right);}
-        if(lo!==Infinity&&lo<hi&&(lo<8||hi>window.innerWidth-8)){
+        /* Wholly off-screen text is a skip link parked at -9999, not a gutter
+           problem, so it does not count as touching the edge. */
+        var off=hi<0||lo>window.innerWidth;
+        if(lo!==Infinity&&lo<hi&&!off&&(lo<8||hi>window.innerWidth-8)){
           var k4='e'+txt.slice(0,18);if(!seen[k4]){seen[k4]=1;
             out.edge.push('glyphs '+Math.round(lo)+' to '+Math.round(hi)+
               ' of '+window.innerWidth+'  "'+txt.slice(0,34)+'"');}}
