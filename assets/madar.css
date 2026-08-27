@@ -21,8 +21,15 @@
   --ice:#9BC1E0; --ice-dim:rgba(155,193,224,0.12);
   --ok:#7FBF8E; --warn:#E8C07D; --stop:#E08585;
 
-  /* text */
-  --text:#EAEEF6; --dim:#8B95A8; --faint:#525C6E;
+  /* text
+     Three tiers, all of which have to be readable. --faint was #525C6E, which
+     measured 2.97:1 on --void and 2.65:1 on --panel-2 and was the single
+     largest source of contrast failures on every page. It is now 5.32:1 on
+     --void and 4.75:1 on --panel-2, so it passes AA on every ground in this
+     system while still sitting a clear step below --dim (6.64:1). Moving the
+     failing elements to --dim instead would have collapsed the scale to two
+     tiers, which the dense surfaces need. */
+  --text:#EAEEF6; --dim:#8B95A8; --faint:#7A8497;
 
   /* type */
   --display:"Space Grotesk",system-ui,-apple-system,sans-serif;
@@ -36,7 +43,10 @@
   --t-lede:clamp(16px,1.5vw,19px);
   --t-body:15px;
   --t-small:13px;
-  --t-label:10.5px;
+  /* The uppercase mono kicker above a heading is read, not glanced at, so it
+     sits on the 12px floor rather than below it. Tracking and case carry the
+     hierarchy that the missing 1.5px used to. */
+  --t-label:12px;
 
   --r:16px; --r-s:10px; --r-pill:100px;
   --ease:cubic-bezier(.2,.7,.3,1);
@@ -93,7 +103,7 @@ h1 .soft,h2 .soft,.hero h1 .soft{color:var(--dim)}
 .nav .mark{display:flex;align-items:center;gap:10px;text-decoration:none;flex:none}
 .wordmark{font-family:var(--display);font-size:12.5px;letter-spacing:.4em;text-transform:uppercase;font-weight:600}
 .wordmark em{font-style:normal;color:var(--copper)}
-.nav .by{font-family:var(--mono);font-size:10.5px;color:var(--faint);flex:none}
+.nav .by{font-family:var(--mono);font-size:12px;color:var(--faint);flex:none}
 .nav .gap{flex:1}
 .nav .lk{font-family:var(--mono);font-size:12px;color:var(--dim);text-decoration:none;padding:6px 0;position:relative;transition:color .18s}
 .nav .lk::after{content:"";position:absolute;left:0;right:100%;bottom:2px;height:1px;background:var(--copper);transition:right .28s var(--ease)}
@@ -109,7 +119,7 @@ h1 .soft,h2 .soft,.hero h1 .soft{color:var(--dim)}
 .btn.ghost{color:var(--dim);border:1px solid var(--line-2)}
 .btn.ghost:hover{color:var(--text);border-color:var(--line-3);transform:translateY(-2px)}
 .btns{display:flex;gap:13px;flex-wrap:wrap;margin-top:32px}
-.under{margin-top:15px;font-family:var(--mono);font-size:11px;color:var(--faint)}
+.under{margin-top:15px;font-family:var(--mono);font-size:12px;color:var(--faint)}
 
 /* ----------------------------------------------------------------- panel */
 .panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:24px;transition:border-color .24s,transform .24s var(--ease)}
@@ -129,7 +139,7 @@ h1 .soft,h2 .soft,.hero h1 .soft{color:var(--dim)}
 @media(max-width:620px){.cols-2,.cols-3{grid-template-columns:1fr}.span-2{grid-column:auto}}
 
 /* ------------------------------------------------------------------ misc */
-.pill{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:10px;letter-spacing:.07em;text-transform:uppercase;padding:4px 11px;border-radius:var(--r-pill);border:1px solid var(--line);color:var(--dim)}
+.pill{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:12px;letter-spacing:.07em;text-transform:uppercase;padding:4px 11px;border-radius:var(--r-pill);border:1px solid var(--line);color:var(--dim)}
 .pill.live{color:var(--copper);border-color:rgba(242,146,107,.34)}
 .pill i{width:5px;height:5px;border-radius:50%;background:currentColor}
 .dot-live{width:6px;height:6px;border-radius:50%;background:var(--ok);animation:beat 2.4s infinite}
@@ -142,9 +152,9 @@ h1 .soft,h2 .soft,.hero h1 .soft{color:var(--dim)}
 .stats{display:flex;flex-wrap:wrap;gap:clamp(22px,4vw,54px);padding:26px 0}
 .stat .v{font-family:var(--display);font-size:clamp(26px,3.4vw,38px);font-weight:600;letter-spacing:-.02em}
 .stat .v em{font-style:normal;color:var(--faint);font-size:.56em}
-.stat .k{font-family:var(--mono);font-size:10.5px;color:var(--faint);margin-top:6px;max-width:22ch;line-height:1.5}
+.stat .k{font-family:var(--mono);font-size:12px;color:var(--faint);margin-top:6px;max-width:22ch;line-height:1.5}
 
-footer{border-top:1px solid var(--line);padding:40px 0 56px;font-family:var(--mono);font-size:11px;color:var(--faint)}
+footer{border-top:1px solid var(--line);padding:40px 0 56px;font-family:var(--mono);font-size:12px;color:var(--faint)}
 footer .row{display:flex;gap:18px;flex-wrap:wrap;align-items:center}
 footer a{color:var(--dim);text-decoration:none;transition:color .18s}
 footer a:hover{color:var(--copper)}
@@ -172,25 +182,25 @@ footer .gap{flex:1}
    ========================================================================= */
 @media (max-width: 640px) {
   :root{
-    --t-label: 11.5px;
+    --t-label: 12px;
     --t-small: 14.5px;
     --t-body: 15.5px;
   }
   body{font-size:15.5px;line-height:1.65}
   .lede{font-size:16.5px;line-height:1.72}
-  .label{font-size:11.5px;letter-spacing:.16em}
+  .label{font-size:12px;letter-spacing:.16em}
   .small,.note,.panel p,.cap p,.pl p{font-size:14.5px;line-height:1.72}
   .under,.stat .k,.chip,.glyph{font-size:12px}
   .nav .lk{font-size:12.5px}
   .wordmark{font-size:12px;letter-spacing:.3em}
-  .frow .k{font-size:11.5px}
+  .frow .k{font-size:12px}
   .frow .v{font-size:14.5px}
-  .integ h4{font-size:11.5px}
+  .integ h4{font-size:12px}
   footer{font-size:12px}
   .btn{font-size:12.5px;padding:15px 22px}
   /* the live panel in the hero is a proof surface, not decoration, so its rows
      have to be legible rather than merely present */
-  .live .lh .t,.live .lf{font-size:11.5px}
-  .lr{font-size:12.5px;grid-template-columns:54px 1fr;gap:9px}
-  .lr .a{font-size:11.5px}
+  .live .lh .t,.live .lf{font-size:12px}
+  .lr{font-size:12.5px;grid-template-columns:78px 1fr;gap:9px}
+  .lr .a{font-size:12px}
 }

@@ -16,7 +16,7 @@
     --void:#07090D; --panel:#0D111A; --panel-2:#151A23;
     --line:rgba(155,193,224,0.13); --line-strong:rgba(155,193,224,0.28);
     --copper:#F2926B; --copper-dim:rgba(242,146,107,0.13); --ice:#9BC1E0;
-    --text:#EAEEF6; --dim:#8B95A8; --faint:#525C6E; --ok:#7FBF8E;
+    --text:#EAEEF6; --dim:#8B95A8; --faint:#7A8497; --ok:#7FBF8E;
     --display:"Space Grotesk",system-ui,sans-serif;
     --body:"Inter",system-ui,sans-serif;
     --mono:"IBM Plex Mono",ui-monospace,monospace;
@@ -34,10 +34,10 @@
   .topin{display:flex;align-items:center;justify-content:space-between;gap:16px}
   .mark{font-family:var(--display);font-weight:700;letter-spacing:.22em;font-size:14px}
   .mark i{font-style:normal;color:var(--copper)}
-  .back{font-family:var(--mono);font-size:11px;color:var(--dim);letter-spacing:.08em}
+  .back{font-family:var(--mono);font-size:12px;color:var(--dim);letter-spacing:.08em}
 
   .lead{padding:56px 0 30px}
-  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.2em;
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.2em;
     text-transform:uppercase;color:var(--copper)}
   h1{font-family:var(--display);font-size:clamp(30px,4.6vw,48px);font-weight:700;
     line-height:1.04;letter-spacing:-.02em;margin-top:14px;text-wrap:balance}
@@ -51,7 +51,7 @@
     transform-origin:left;transition:transform .45s ease}
   .seg.done i,.seg.now i{transform:scaleX(1)}
   .seg.now i{background:var(--copper)}
-  .railtxt{font-family:var(--mono);font-size:11px;color:var(--faint);
+  .railtxt{font-family:var(--mono);font-size:12px;color:var(--faint);
     letter-spacing:.09em;margin-bottom:26px}
 
   /* steps */
@@ -62,7 +62,7 @@
   .hint{color:var(--faint);font-size:14px;margin-top:6px;margin-bottom:24px}
 
   .field{margin-bottom:20px}
-  label{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.1em;
+  label{display:block;font-family:var(--mono);font-size:12px;letter-spacing:.1em;
     text-transform:uppercase;color:var(--dim);margin-bottom:8px}
   input,textarea,select{width:100%;background:var(--panel);border:1px solid var(--line);
     color:var(--text);font-family:var(--body);font-size:15px;padding:13px 14px;
@@ -78,7 +78,7 @@
     background:var(--panel);border:1px solid var(--line);padding:9px 13px;
     cursor:pointer;border-radius:2px;transition:all .16s;user-select:none}
   .chip:hover{border-color:var(--line-strong);color:var(--text)}
-  .chip.on{border-color:var(--copper);color:var(--copper);background:var(--copper-dim)}
+  .chip.on{border-color:var(--copper);color:var(--copper);background-color:transparent;background-image:linear-gradient(var(--copper-dim),var(--copper-dim))}
 
   .nav{display:flex;gap:12px;align-items:center;margin-top:32px;
     padding-top:24px;border-top:1px solid var(--line)}
@@ -96,7 +96,7 @@
   /* the recommendation */
   .verdict{border:1px solid var(--line-strong);background:var(--panel);padding:0;margin-top:8px}
   .vtop{padding:26px 28px;border-bottom:1px solid var(--line)}
-  .vlabel{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  .vlabel{font-family:var(--mono);font-size:12px;letter-spacing:.16em;
     text-transform:uppercase;color:var(--copper)}
   .vname{font-family:var(--display);font-size:clamp(26px,3.6vw,36px);font-weight:700;
     letter-spacing:-.02em;margin-top:8px}
@@ -105,11 +105,11 @@
   .vrow{display:flex;gap:14px;padding:11px 0;border-bottom:1px solid var(--line);font-size:14.5px}
   .vrow:last-child{border-bottom:none}
   .vrow b{color:var(--text);font-weight:600;min-width:126px;font-family:var(--mono);
-    font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);
+    font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);
     padding-top:3px}
   .vrow span{color:var(--dim)}
   .price{font-family:var(--mono);font-size:20px;color:var(--text);letter-spacing:-.01em}
-  .quoted{border-left:2px solid var(--copper);background:var(--copper-dim);
+  .quoted{border-left:2px solid var(--copper);background-image:linear-gradient(var(--copper-dim),var(--copper-dim));
     padding:16px 18px;margin-top:18px;font-size:14.5px;color:var(--dim)}
   .quoted b{color:var(--text)}
 
@@ -119,14 +119,14 @@
     display:block;text-decoration:none;transition:border-color .16s;cursor:pointer;
     text-align:left;font-family:var(--body);color:var(--text)}
   .act:hover{border-color:var(--copper);text-decoration:none}
-  .act .k{font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  .act .k{font-family:var(--mono);font-size:12px;letter-spacing:.14em;
     text-transform:uppercase;color:var(--copper)}
   .act .t{font-family:var(--display);font-size:17px;font-weight:600;margin-top:8px}
   .act .d{color:var(--faint);font-size:13.5px;margin-top:5px;line-height:1.5}
 
   .status{font-family:var(--mono);font-size:13px;margin-top:18px;color:var(--dim)}
   .foot{border-top:1px solid var(--line);margin-top:60px;padding:26px 0 50px;
-    font-family:var(--mono);font-size:11px;color:var(--faint);letter-spacing:.08em}
+    font-family:var(--mono);font-size:12px;color:var(--faint);letter-spacing:.08em}
   @media(prefers-reduced-motion:reduce){.step.on{animation:none}.seg i{transition:none}}
 </style>
 </head>

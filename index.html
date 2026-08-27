@@ -30,17 +30,17 @@
 
   /* the hero panel: a slice of a running system, not a stock illustration */
   .live{background:linear-gradient(168deg,var(--panel-2),var(--panel));border:1px solid var(--line-2);border-radius:var(--r);overflow:hidden;box-shadow:0 30px 90px rgba(0,0,0,.5)}
-  .live .lh{display:flex;align-items:center;gap:8px;padding:12px 15px;border-bottom:1px solid var(--line);background:rgba(155,193,224,.03)}
-  .live .lh .t{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
+  .live .lh{display:flex;align-items:center;gap:8px;padding:12px 15px;border-bottom:1px solid var(--line);background-image:linear-gradient(rgba(155,193,224,.03),rgba(155,193,224,.03))}
+  .live .lh .t{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
   .live .lh .gap{flex:1}
   .live .rows{padding:7px 0}
-  .lr{display:grid;grid-template-columns:60px 1fr;gap:10px;padding:7px 15px;font-family:var(--mono);font-size:11px;align-items:baseline}
-  .lr .a{color:var(--copper);font-size:10px}
+  .lr{display:grid;grid-template-columns:78px 1fr;gap:10px;padding:7px 15px;font-family:var(--mono);font-size:12px;align-items:baseline}
+  .lr .a{color:var(--copper);font-size:12px}
   .lr .b{color:var(--dim);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .lr .b b{color:var(--text);font-weight:500}
-  .lr.ask{background:rgba(242,146,107,.05)}
+  .lr.ask{background-image:linear-gradient(rgba(242,146,107,.05),rgba(242,146,107,.05))}
   .lr.ask .b b{color:var(--warn)}
-  .live .lf{padding:11px 15px;border-top:1px solid var(--line);display:flex;align-items:center;gap:9px;font-family:var(--mono);font-size:10.5px;color:var(--faint)}
+  .live .lf{padding:11px 15px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;align-items:center;gap:9px;font-family:var(--mono);font-size:12px;color:var(--faint)}
   .live .lf a{color:var(--ice);text-decoration:none;border-bottom:1px solid rgba(155,193,224,.3)}
 
   /* the turn: one wide sentence, deliberately breaking the card rhythm */
@@ -53,7 +53,7 @@
   .caps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
   .cap{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:24px;position:relative;overflow:hidden;transition:border-color .26s,transform .26s var(--ease)}
   .cap:hover{border-color:var(--line-2);transform:translateY(-3px)}
-  .cap .n{font-family:var(--mono);font-size:10px;color:var(--faint);letter-spacing:.16em}
+  .cap .n{font-family:var(--mono);font-size:12px;color:var(--faint);letter-spacing:.16em}
   .cap h3{margin:13px 0 10px}
   .cap p{color:var(--dim);font-size:var(--t-small);line-height:1.72}
   .cap p b{color:var(--text);font-weight:500}
@@ -64,27 +64,27 @@
   @media(max-width:620px){.caps{grid-template-columns:1fr}.cap.wide{grid-column:auto}}
 
   .glyphs{display:flex;flex-wrap:wrap;gap:8px;margin-top:26px}
-  .glyph{font-family:var(--mono);font-size:11px;color:var(--dim);border:1px solid var(--line);border-radius:var(--r-pill);padding:6px 13px;transition:border-color .2s,color .2s}
+  .glyph{font-family:var(--mono);font-size:12px;color:var(--dim);border:1px solid var(--line);border-radius:var(--r-pill);padding:6px 13px;transition:border-color .2s,color .2s}
   .glyph:hover{border-color:var(--line-3);color:var(--text)}
 
   /* the command flow */
   .flow{display:grid;gap:2px;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--line)}
   .frow{display:grid;grid-template-columns:104px 1fr;gap:16px;padding:16px 20px;background:var(--panel);align-items:baseline}
-  .frow .k{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint)}
+  .frow .k{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint)}
   .frow .v{font-size:var(--t-small);color:var(--dim);line-height:1.65}
   .frow .v b{color:var(--text);font-weight:500}
   .frow.hot{background:var(--panel-2)}
   .frow.hot .k{color:var(--copper)}
   .frow.hot .v{color:var(--text)}
-  .frow.ring{background:linear-gradient(90deg,rgba(242,146,107,.08),transparent)}
+  .frow.ring{background-image:linear-gradient(90deg,rgba(242,146,107,.08),transparent)}
   .frow.ring .k{color:var(--warn)}
   @media(max-width:620px){.frow{grid-template-columns:1fr;gap:5px}}
 
   /* integrations */
   .integ{display:grid;grid-template-columns:repeat(auto-fit,minmax(255px,1fr));gap:20px;margin-top:34px}
-  .integ h4{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--copper);margin-bottom:11px}
+  .integ h4{font-family:var(--mono);font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--copper);margin-bottom:11px}
   .chips{display:flex;flex-wrap:wrap;gap:6px}
-  .chip{font-family:var(--mono);font-size:11px;color:var(--dim);border:1px solid var(--line);border-radius:7px;padding:5px 10px}
+  .chip{font-family:var(--mono);font-size:12px;color:var(--dim);border:1px solid var(--line);border-radius:7px;padding:5px 10px}
   .chip.on{color:var(--copper);border-color:rgba(242,146,107,.34)}
 
   .proof{font-size:var(--t-lede);line-height:1.78;color:var(--dim);max-width:66ch}
@@ -100,20 +100,20 @@
      first attempt at this fix changed nothing at all. Cascade order, not
      specificity. */
   @media (max-width:640px){
-    .nav .by{font-size:11.5px}
-    .label,.kick{font-size:11.5px!important;letter-spacing:.16em}
+    .nav .by{font-size:12px}
+    .label,.kick{font-size:12px!important;letter-spacing:.16em}
     .under{font-size:12px}
-    .live .lh .t,.live .lf{font-size:11.5px}
-    .lr{font-size:12.5px;grid-template-columns:52px 1fr;gap:9px}
-    .lr .a{font-size:11.5px}
+    .live .lh .t,.live .lf{font-size:12px}
+    .lr{font-size:12.5px;grid-template-columns:78px 1fr;gap:9px}
+    .lr .a{font-size:12px}
     .glyph,.chip{font-size:12px}
-    .integ h4{font-size:11.5px}
-    .frow .k{font-size:11.5px}
+    .integ h4{font-size:12px}
+    .frow .k{font-size:12px}
     .frow .v{font-size:14.5px}
     .stat .k{font-size:12px}
     .proof{font-size:15.5px}
-    .plan .for{font-size:11.5px}
-    .plan .price small{font-size:11px;letter-spacing:.06em}
+    .plan .for{font-size:12px}
+    .plan .price small{font-size:12px;letter-spacing:.06em}
     .plan li,.pl p{font-size:14px}
     td,th{font-size:12.5px}
     footer,.foot,.note{font-size:12.5px}
@@ -137,19 +137,19 @@
   #orbit{width:100%;height:100%;position:absolute;inset:0;cursor:grab;touch-action:none}
   #orbit.drag{cursor:grabbing}
   .ob-hint{position:absolute;left:18px;bottom:16px;font-family:var(--mono);
-    font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);
+    font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);
     border:1px solid var(--line);padding:6px 10px;transition:opacity .6s;pointer-events:none}
   .ob-hint.gone{opacity:0}
   .ob-panel{border-left:1px solid var(--line);padding:30px;display:flex;
     flex-direction:column;justify-content:center;gap:14px;min-height:480px}
   @media(max-width:900px){.ob-panel{border-left:none;border-top:1px solid var(--line);min-height:0}}
-  .ob-kind{font-family:var(--mono);font-size:10px;letter-spacing:.16em;
+  .ob-kind{font-family:var(--mono);font-size:12px;letter-spacing:.16em;
     text-transform:uppercase;color:var(--ice)}
   .ob-title{font-family:var(--display);font-size:22px;font-weight:700;
     letter-spacing:-.015em;line-height:1.15}
   .ob-body{color:var(--dim);font-size:14.5px;line-height:1.6}
   .ob-legend{margin-top:8px;padding-top:16px;border-top:1px solid var(--line);
-    display:grid;gap:8px;font-family:var(--mono);font-size:10.5px;color:var(--faint);
+    display:grid;gap:8px;font-family:var(--mono);font-size:12px;color:var(--faint);
     letter-spacing:.05em}
   .ob-legend span{display:flex;align-items:center;gap:9px}
   .ob-legend i{width:7px;height:7px;border-radius:50%;flex:none}
