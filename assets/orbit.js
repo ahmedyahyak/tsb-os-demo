@@ -10,18 +10,45 @@
    system holds orbits in ice. When something needs your word it warms to
    copper and pulls forward, which is the permission ring, shown.
 
-   Hand written projection, no libraries. Drag to rotate, click a body to see
-   what is known about it.
+   Hand written projection, no libraries.
+
+   ── one object, not two ──────────────────────────────────────────────────
+   This used to be a canvas sitting inside the context-graph section, which
+   put it 1,479px down the page. Nobody scrolled that far, so the site read
+   as flat. Now a single fixed, full-viewport canvas draws the scene behind
+   the hero, dim and untouchable, and the same scene walks down and lands
+   inside the section box as you scroll. Two canvases cross-fading would have
+   been easier and would have looked like two canvases cross-fading.
+
+   Everything is driven off the live rect of the landing box, so at the end
+   of the scroll the drawing simply tracks the box and appears pinned to it.
+   That is also why the sections it passes are translucent rather than solid:
+   a fixed layer behind an opaque band is an invisible fixed layer.
+
+   ── why the canvas cannot take pointer events ────────────────────────────
+   It covers the whole viewport, so it would eat every click on the page. It
+   is pointer-events:none, and .orbit-hit inside the section is the only
+   place that listens.
+
+   That hit layer is touch-action:pan-y, not none. With none, a phone user
+   swiping up over the graph rotated it instead of scrolling, and on a 380px
+   tall full-width block that meant getting stuck. pan-y gives vertical
+   swipes back to the browser and keeps horizontal drags for rotation, so
+   tilt is mouse-only now. Scrolling past matters more than tilting.
    ═══════════════════════════════════════════════════════════════════════════ */
 (function () {
   'use strict';
   var cv = document.getElementById('orbit');
   if (!cv) return;
+  var hit = document.getElementById('orbitHit');
+  var hero = document.getElementById('heroTop');
   var ctx = cv.getContext('2d');
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   function token(n) {
     return getComputedStyle(document.documentElement).getPropertyValue(n).trim();
   }
+  function clamp(v, a, b) { return v < a ? a : v > b ? b : v; }
+  function lerp(a, b, t) { return a + (b - a) * t; }
 
   /* The same sample company the rest of the site uses, so the story holds. */
   var BODIES = [
@@ -54,21 +81,56 @@
   var st = { ang: -0.5, tilt: 0.46, spin: 0 };
   var W = 0, H = 0, sel = null, hover = null, pulse = 0;
 
+  /* Where the scene is drawn this frame, and how loudly. Recomputed from the
+     scroll position before every draw, so `project` stays pure. */
+  var view = { cx: 0, cy: 0, S: 700, alpha: 0.26, lab: 0, dot: 0.72, on: false };
+
   function fit() {
     var dpr = Math.min(window.devicePixelRatio || 1, 2);
-    W = cv.clientWidth; H = cv.clientHeight;
+    W = window.innerWidth; H = window.innerHeight;
     cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+    cv.style.width = W + 'px'; cv.style.height = H + 'px';
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   }
+
+  /* The scroll drive. p is 0 while the landing box is still below the fold
+     and 1 once its centre reaches the middle of the viewport, after which it
+     stays 1 and the scene simply follows the box up the page. */
+  function frameView() {
+    var vh = window.innerHeight, vw = window.innerWidth;
+    var hr = hit ? hit.getBoundingClientRect() : null;
+    if (!hr) { view.on = false; return; }
+    var boxC = hr.top + hr.height / 2;
+    var p = 1 - clamp((boxC - vh * 0.5) / (vh * 0.9), 0, 1);
+    var pe = p * p * (3 - 2 * p);                       // smoothstep
+
+    var heroC = vh * 0.46;
+    if (hero) { var e = hero.getBoundingClientRect(); heroC = e.top + e.height * 0.5; }
+
+    view.cx = lerp(vw * 0.5, hr.left + hr.width / 2, pe);
+    view.cy = lerp(heroC, boxC, pe);
+    view.S = lerp(Math.max(vw, vh) * 0.95, Math.min(hr.width, hr.height * 1.5), pe);
+    view.alpha = lerp(0.26, 1, pe);
+    view.dot = lerp(0.5, 1, pe);          // finer behind the headline
+    view.lab = clamp((p - 0.55) / 0.35, 0, 1);
+    /* Twelve mono labels do not fit across a phone: they landed on top of each
+       other and read as a broken render. Narrow screens label only what is
+       live, and tapping a dot is how you name the rest. */
+    view.dense = W >= 700;
+    view.on = p > 0.72;                                 // interaction gate
+    /* Nothing on screen, nothing to draw. */
+    view.skip = view.cy < -vh * 0.9 || view.cy > vh * 1.9;
+  }
+
   function project(x, y, z) {
     var ca = Math.cos(st.ang), sa = Math.sin(st.ang);
     var rx = x * ca - z * sa, rz = x * sa + z * ca;
     var ct = Math.cos(st.tilt), stl = Math.sin(st.tilt);
     var ry = y * ct - rz * stl, rzz = y * stl + rz * ct;
-    var tz = rzz + 300, f = (Math.min(W, H * 1.5) * 0.60) / Math.max(tz, 1);
+    var tz = rzz + 300, f = (view.S * 0.60) / Math.max(tz, 1);
     // s is the perspective scale, used directly as a radius multiplier.
     // Scaling it by 300 made the centre dot 2300px wide and filled the canvas.
-    return { X: W / 2 + rx * f, Y: H / 2 + ry * f * 1.05, s: f, z: tz };
+    return { X: view.cx + rx * f, Y: view.cy + ry * f * 1.05, s: f, z: tz };
   }
   function place(b) {
     var x = Math.cos(b.a) * b.r;
@@ -78,10 +140,12 @@
   }
 
   function draw() {
+    ctx.clearRect(0, 0, W, H);
+    if (view.skip) { BODIES.forEach(function (b) { b._hit = null; }); return; }
     var copper = token('--copper') || '#F2926B';
     var ice = token('--ice') || '#9BC1E0';
-    var faint = token('--faint') || '#525C6E';
-    ctx.clearRect(0, 0, W, H);
+    var faint = token('--faint') || '#7A8497';
+    var A = view.alpha;
 
     /* the rings themselves, drawn as paths so the geometry reads as orbit */
     RINGS.forEach(function (r, ri) {
@@ -93,7 +157,7 @@
         t === 0 ? ctx.moveTo(p.X, p.Y) : ctx.lineTo(p.X, p.Y);
       }
       ctx.closePath();
-      ctx.strokeStyle = ice; ctx.globalAlpha = 0.09; ctx.lineWidth = 1; ctx.stroke();
+      ctx.strokeStyle = ice; ctx.globalAlpha = 0.13 * A; ctx.lineWidth = 1; ctx.stroke();
     });
     ctx.globalAlpha = 1;
 
@@ -105,7 +169,7 @@
     pts.forEach(function (o) {
       if (!o.b.hot) return;
       ctx.beginPath(); ctx.moveTo(c0.X, c0.Y); ctx.lineTo(o.p.X, o.p.Y);
-      ctx.strokeStyle = copper; ctx.globalAlpha = 0.20 + Math.sin(pulse) * 0.12;
+      ctx.strokeStyle = copper; ctx.globalAlpha = (0.20 + Math.sin(pulse) * 0.12) * A;
       ctx.lineWidth = 1; ctx.stroke();
     });
     ctx.globalAlpha = 1;
@@ -113,15 +177,20 @@
     pts.forEach(function (o) {
       var b = o.b, p = o.p;
       var live = b.hot || sel === b || hover === b;
-      var rad = Math.max(2.4, (live ? 5.4 : 3.4) * p.s);
-      ctx.globalAlpha = Math.max(0.28, Math.min(1, (420 - p.z) / 200));
+      /* Capped. Perspective spreads p.s across nearly 4x, and unclamped the
+         near bodies rendered as 36px copper discs that read as planets rather
+         than as points of data. The floor keeps the far ones from vanishing. */
+      var rad = clamp((live ? 5.4 : 3.4) * p.s * view.dot, 2.4, live ? 9 : 6.5);
+      ctx.globalAlpha = Math.max(0.28, Math.min(1, (420 - p.z) / 200)) * A;
       ctx.fillStyle = live ? copper : ice;
-      if (b.hot) { ctx.shadowColor = copper; ctx.shadowBlur = 10 + Math.sin(pulse) * 6; }
+      if (b.hot) { ctx.shadowColor = copper; ctx.shadowBlur = (10 + Math.sin(pulse) * 6) * A; }
       ctx.beginPath(); ctx.arc(p.X, p.Y, rad, 0, Math.PI * 2); ctx.fill();
       ctx.shadowBlur = 0;
 
-      if (p.z < 300 || live) {
-        ctx.globalAlpha = live ? 1 : Math.max(0.25, Math.min(0.72, (420 - p.z) / 190));
+      /* Labels are the part that would turn the hero into noise, so they only
+         arrive once the scene is most of the way into its box. */
+      if (view.lab > 0.02 && (view.dense || live) && (p.z < 300 || live)) {
+        ctx.globalAlpha = (live ? 1 : Math.max(0.25, Math.min(0.72, (420 - p.z) / 190))) * view.lab;
         ctx.fillStyle = live ? copper : faint;
         ctx.font = (live ? '600 ' : '') + '11px "IBM Plex Mono", ui-monospace, monospace';
         // Flip the label to the left when it would run off the canvas, so a
@@ -135,13 +204,16 @@
     });
 
     /* you, at the centre, and the ring that is the mark */
+    ctx.beginPath(); ctx.arc(c0.X, c0.Y, Math.min(17 * c0.s, 30), 0, Math.PI * 2);
+    ctx.strokeStyle = copper; ctx.globalAlpha = 0.34 * A; ctx.lineWidth = 1; ctx.stroke();
+    ctx.globalAlpha = A; ctx.fillStyle = copper;
+    ctx.beginPath(); ctx.arc(c0.X, c0.Y, Math.min(5.6 * c0.s * view.dot, 8), 0, Math.PI * 2); ctx.fill();
+    if (view.lab > 0.02) {
+      ctx.globalAlpha = view.lab;
+      ctx.font = '600 11px "IBM Plex Mono", ui-monospace, monospace';
+      ctx.fillText('you', c0.X + 13, c0.Y + 4);
+    }
     ctx.globalAlpha = 1;
-    ctx.beginPath(); ctx.arc(c0.X, c0.Y, 17 * c0.s, 0, Math.PI * 2);
-    ctx.strokeStyle = copper; ctx.globalAlpha = 0.34; ctx.lineWidth = 1; ctx.stroke();
-    ctx.globalAlpha = 1; ctx.fillStyle = copper;
-    ctx.beginPath(); ctx.arc(c0.X, c0.Y, 5.6 * c0.s, 0, Math.PI * 2); ctx.fill();
-    ctx.font = '600 11px "IBM Plex Mono", ui-monospace, monospace';
-    ctx.fillText('you', c0.X + 13, c0.Y + 4);
   }
 
   /* ── panel ─────────────────────────────────────────────────────────── */
@@ -159,9 +231,10 @@
   }
   say(BODIES.filter(function (b) { return b.hot; })[0] || BODIES[0]);
 
+  /* The canvas is fixed to the viewport, so a body's drawn X/Y already are
+     client coordinates and the pointer needs no conversion. */
   function at(e) {
-    var r = cv.getBoundingClientRect();
-    var x = e.clientX - r.left, y = e.clientY - r.top, best = null, bd = 1e9;
+    var x = e.clientX, y = e.clientY, best = null, bd = 1e9;
     BODIES.forEach(function (b) {
       if (!b._hit) return;
       var d = Math.hypot(b._hit.x - x, b._hit.y - y);
@@ -170,33 +243,40 @@
     return best;
   }
 
-  var down = false, px = 0, py = 0, moved = 0, hinted = false;
-  cv.addEventListener('pointerdown', function (e) {
-    down = true; moved = 0; px = e.clientX; py = e.clientY;
-    cv.classList.add('drag');
-    try { cv.setPointerCapture(e.pointerId); } catch (_) {}
-    var h = document.getElementById('obHint');
-    if (!hinted && h) { hinted = true; h.classList.add('gone'); }
-  });
-  cv.addEventListener('pointermove', function (e) {
-    if (down) {
-      moved += Math.abs(e.clientX - px) + Math.abs(e.clientY - py);
-      st.ang -= (e.clientX - px) * 0.006;
-      st.tilt = Math.max(-0.2, Math.min(1.05, st.tilt + (e.clientY - py) * 0.004));
-      st.spin = -(e.clientX - px) * 0.0004;
-      px = e.clientX; py = e.clientY;
-    } else {
-      var h = at(e);
-      if (h !== hover) { hover = h; cv.style.cursor = h ? 'pointer' : 'grab'; }
+  if (hit) {
+    var down = false, px = 0, py = 0, moved = 0, hinted = false, mouse = false;
+    hit.addEventListener('pointerdown', function (e) {
+      if (!view.on) return;
+      down = true; moved = 0; px = e.clientX; py = e.clientY;
+      mouse = e.pointerType === 'mouse';
+      hit.classList.add('drag');
+      try { hit.setPointerCapture(e.pointerId); } catch (_) {}
+      var h = document.getElementById('obHint');
+      if (!hinted && h) { hinted = true; h.classList.add('gone'); }
+    });
+    hit.addEventListener('pointermove', function (e) {
+      if (down) {
+        moved += Math.abs(e.clientX - px) + Math.abs(e.clientY - py);
+        st.ang -= (e.clientX - px) * 0.006;
+        /* Touch keeps its vertical axis for scrolling, so tilt is mouse only. */
+        if (mouse) st.tilt = clamp(st.tilt + (e.clientY - py) * 0.004, -0.2, 1.05);
+        st.spin = -(e.clientX - px) * 0.0004;
+        px = e.clientX; py = e.clientY;
+      } else if (view.on) {
+        var h = at(e);
+        if (h !== hover) { hover = h; hit.style.cursor = h ? 'pointer' : 'grab'; }
+      }
+    });
+    function up(e) {
+      if (down && moved < 6) { var b = at(e); if (b) { sel = b; say(b); } }
+      down = false; hit.classList.remove('drag');
+      try { hit.releasePointerCapture(e.pointerId); } catch (_) {}
     }
-  });
-  function up(e) {
-    if (down && moved < 6) { var b = at(e); if (b) { sel = b; say(b); } }
-    down = false; cv.classList.remove('drag');
-    try { cv.releasePointerCapture(e.pointerId); } catch (_) {}
+    hit.addEventListener('pointerup', up);
+    hit.addEventListener('pointercancel', function () {
+      down = false; hit.classList.remove('drag');
+    });
   }
-  cv.addEventListener('pointerup', up);
-  cv.addEventListener('pointercancel', function () { down = false; cv.classList.remove('drag'); });
 
   var last = 0;
   function frame(ts) {
@@ -208,6 +288,7 @@
       st.ang += dt * 0.00004 + st.spin;
       st.spin *= 0.94;
     }
+    frameView();
     draw();
     requestAnimationFrame(frame);
   }

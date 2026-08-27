@@ -14,7 +14,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/madar.css">
 <style>
-  .hero{padding:clamp(46px,7vw,86px) 0 clamp(30px,4vw,48px)}
+  /* var(--gut), never 0: .hero is also .wrap, and a zero horizontal slot in
+     the shorthand wipes the gutter, putting the headline on the phone edge. */
+  .hero{padding:clamp(46px,7vw,86px) var(--gut) clamp(30px,4vw,48px)}
   .hero h1{margin-top:18px}
   .hero .lede{margin-top:22px;max-width:64ch}
 

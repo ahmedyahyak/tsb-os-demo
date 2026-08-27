@@ -20,9 +20,17 @@
 <style>
   /* page-specific only; everything shared lives in madar.css */
   #sky{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5}
+  /* The orbit is one fixed layer for the whole page: it sits behind the hero
+     and walks down into the context-graph box as you scroll. It cannot take
+     pointer events or it would swallow every click on the site, so .orbit-hit
+     does the listening. Both canvases sit under .page. */
+  #orbit{position:fixed;inset:0;z-index:0;pointer-events:none}
   .page{position:relative;z-index:1}
 
-  .hero{padding:clamp(52px,9vw,104px) 0 clamp(44px,6vw,74px)}
+  /* var(--gut), never 0: this element is also .wrap, so a padding shorthand
+     with a zero horizontal slot silently wipes the gutter and the headline
+     runs into the left edge of the phone. */
+  .hero{padding:clamp(52px,9vw,104px) var(--gut) clamp(44px,6vw,74px)}
   .hero-grid{display:grid;grid-template-columns:1.24fr .76fr;gap:clamp(28px,5vw,58px);align-items:center}
   .hero h1{margin-top:20px;font-size:clamp(34px,4.5vw,60px)}
   .hero .lede{margin-top:24px;max-width:52ch}
@@ -44,7 +52,10 @@
   .live .lf a{color:var(--ice);text-decoration:none;border-bottom:1px solid rgba(155,193,224,.3)}
 
   /* the turn: one wide sentence, deliberately breaking the card rhythm */
-  .turn{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--deep)}
+  /* Translucent, not var(--deep), so the orbit behind stays faintly visible as
+     it passes. --deep and --void are two points apart, so this reads the same. */
+  .turn{border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+    background:rgba(8,11,17,.76)}
   .turn .big{font-family:var(--display);font-size:clamp(21px,2.7vw,33px);font-weight:500;line-height:1.42;letter-spacing:-.014em;max-width:30ch}
   .turn .big b{color:var(--copper);font-weight:600}
   .turn .side{color:var(--dim);font-size:var(--t-small);line-height:1.8;max-width:42ch}
@@ -90,7 +101,7 @@
   .proof{font-size:var(--t-lede);line-height:1.78;color:var(--dim);max-width:66ch}
   .proof b{color:var(--text);font-weight:500}
 
-  .close{text-align:center;padding:clamp(56px,8vw,100px) 0}
+  .close{text-align:center;padding:clamp(56px,8vw,100px) var(--gut)}
   .close h2{max-width:18ch;margin:14px auto 0}
   .close .lede{margin:18px auto 0;text-align:center}
   .close .btns{justify-content:center}
@@ -123,25 +134,33 @@
      Full bleed, placed straight after the switchboard idea, because that is
      the moment the reader has understood the claim and wants to see it. */
   .orbit-band{border-top:1px solid var(--line);border-bottom:1px solid var(--line);
-    background:linear-gradient(180deg,var(--panel),var(--void) 70%)}
+    background:linear-gradient(180deg,rgba(13,17,26,.86),rgba(6,8,12,.34) 70%)}
   .orbit-head{padding:64px 0 26px;max-width:60ch}
   .orbit-head .label{color:var(--copper)}
   .orbit-head h2{font-family:var(--display);font-size:clamp(24px,3.3vw,36px);
     font-weight:700;letter-spacing:-.02em;line-height:1.08;margin-top:12px}
   .orbit-head p{color:var(--dim);margin-top:14px}
+  /* Transparent so the fixed orbit layer shows through the landing box. */
   .orbit-grid{display:grid;grid-template-columns:1.45fr .8fr;gap:0;
-    border:1px solid var(--line);margin-bottom:64px;background:var(--void)}
+    border:1px solid var(--line);margin-bottom:64px;background:transparent}
   @media(max-width:900px){.orbit-grid{grid-template-columns:1fr}}
   .orbit-hold{position:relative;min-height:480px}
   @media(max-width:900px){.orbit-hold{min-height:380px}}
-  #orbit{width:100%;height:100%;position:absolute;inset:0;cursor:grab;touch-action:none}
-  #orbit.drag{cursor:grabbing}
+  /* The only thing that listens for the drag. pan-y, never none: with none a
+     phone user swiping up over this block rotated the graph instead of
+     scrolling the page and could not get past it. */
+  .orbit-hit{position:absolute;inset:0;cursor:grab;touch-action:pan-y}
+  .orbit-hit.drag{cursor:grabbing}
   .ob-hint{position:absolute;left:18px;bottom:16px;font-family:var(--mono);
     font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);
-    border:1px solid var(--line);padding:6px 10px;transition:opacity .6s;pointer-events:none}
+    border:1px solid var(--line);background:rgba(6,8,12,.72);
+    padding:6px 10px;transition:opacity .6s;pointer-events:none}
   .ob-hint.gone{opacity:0}
+  /* Own background: the orbit layer runs behind this column too, and body copy
+     does not sit on top of moving dots. */
   .ob-panel{border-left:1px solid var(--line);padding:30px;display:flex;
-    flex-direction:column;justify-content:center;gap:14px;min-height:480px}
+    flex-direction:column;justify-content:center;gap:14px;min-height:480px;
+    background:rgba(8,11,17,.82)}
   @media(max-width:900px){.ob-panel{border-left:none;border-top:1px solid var(--line);min-height:0}}
   .ob-kind{font-family:var(--mono);font-size:12px;letter-spacing:.16em;
     text-transform:uppercase;color:var(--ice)}
@@ -157,6 +176,7 @@
 </head>
 <body>
 <canvas id="sky" aria-hidden="true"></canvas>
+<canvas id="orbit" aria-hidden="true"></canvas>
 
 <div class="page">
 <div class="wrap">
@@ -178,7 +198,7 @@
 </div>
 
 <!-- ============================================================== hero -->
-<header class="wrap hero">
+<header class="wrap hero" id="heroTop">
   <div class="hero-grid">
     <div>
       <div class="label">For owner operators, 20 to 200 people</div>
@@ -223,7 +243,8 @@
     </div>
     <div class="orbit-grid">
       <div class="orbit-hold">
-        <canvas id="orbit" aria-label="Your business in orbit. Drag to rotate, click a body to read it."></canvas>
+        <div class="orbit-hit" id="orbitHit" role="img"
+             aria-label="Your business in orbit. Drag to rotate, click a body to read it."></div>
         <div class="ob-hint" id="obHint">Drag to rotate · click a body</div>
       </div>
       <div class="ob-panel">
