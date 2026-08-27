@@ -4,389 +4,414 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Design your Madar · Madar OS</title>
-<meta name="description" content="Sketch your own Madar OS deployment: pick the departments your structure needs and see what it would look like running your company.">
+<meta name="description" content="Answer a few questions about how your business actually runs. We tell you which shape of Madar OS fits, and why.">
+<meta name="robots" content="noindex">
 <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
-<meta property="og:title" content="Design your Madar · it takes the shape of your company">
-<meta property="og:description" content="Pick a plan, choose your departments, tell us how your business runs. Your blueprint gets a personalized reply in under a minute.">
-<meta property="og:image" content="https://tsb-os-demo.vercel.app/assets/og.png">
-<meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --void:#07090D; --panel: #0D111A; --panel-2:#151A23;
+  :root{
+    --void:#07090D; --panel:#0D111A; --panel-2:#151A23;
     --line:rgba(155,193,224,0.13); --line-strong:rgba(155,193,224,0.28);
-    --copper:#F2926B; --ice:#9BC1E0; --text: #EAEEF6; --dim: #8B95A8; --faint: #525C6E;
-    --ok:#7FBF8E;
+    --copper:#F2926B; --copper-dim:rgba(242,146,107,0.13); --ice:#9BC1E0;
+    --text:#EAEEF6; --dim:#8B95A8; --faint:#525C6E; --ok:#7FBF8E;
     --display:"Space Grotesk",system-ui,sans-serif;
     --body:"Inter",system-ui,sans-serif;
     --mono:"IBM Plex Mono",ui-monospace,monospace;
   }
-  * { margin:0; padding:0; box-sizing:border-box; }
-  html, body { background:var(--void); }
-  body { font-family:var(--body); color:var(--text); min-height:100vh; overflow-x:hidden; }
-  #sky { position:fixed; inset:0; z-index:0; pointer-events:none; }
-  .wrap { position:relative; z-index:1; max-width:860px; margin:0 auto; padding:0 28px 80px; }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--void);color:var(--text);font-family:var(--body);
+    font-size:16px;line-height:1.62;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:860px;margin:0 auto;padding:0 24px}
+  a{color:var(--ice);text-decoration:none}
+  a:hover{text-decoration:underline;text-underline-offset:3px}
+  :focus-visible{outline:2px solid var(--copper);outline-offset:3px;border-radius:3px}
 
-  .nav { display:flex; align-items:baseline; gap:18px; padding:26px 0; }
-  .wordmark { font-family:var(--display); font-size:13px; letter-spacing:0.42em; text-transform:uppercase; }
-  .wordmark em { font-style:normal; color:var(--copper); }
-  .nav a { font-family:var(--mono); font-size:12px; color:var(--dim); text-decoration:none; }
-  .nav a:hover { color:var(--copper); }
-  .nav .gap { flex:1; }
+  .top{border-bottom:1px solid var(--line);padding:18px 0;position:sticky;top:0;
+    background:rgba(7,9,13,.9);backdrop-filter:blur(12px);z-index:20}
+  .topin{display:flex;align-items:center;justify-content:space-between;gap:16px}
+  .mark{font-family:var(--display);font-weight:700;letter-spacing:.22em;font-size:14px}
+  .mark i{font-style:normal;color:var(--copper)}
+  .back{font-family:var(--mono);font-size:11px;color:var(--dim);letter-spacing:.08em}
 
-  .head { padding:5vh 0 10px; }
-  .kick { font-family:var(--mono); font-size:12px; color:var(--copper); letter-spacing:0.18em; text-transform:uppercase; }
-  h1 { font-family:var(--display); font-weight:500; font-size:clamp(28px,4.6vw,44px); margin-top:14px; text-wrap:balance; }
-  h1 .soft { color:var(--dim); }
-  .lede { margin-top:14px; color:var(--dim); line-height:1.7; font-size:16px; }
+  .lead{padding:56px 0 30px}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.2em;
+    text-transform:uppercase;color:var(--copper)}
+  h1{font-family:var(--display);font-size:clamp(30px,4.6vw,48px);font-weight:700;
+    line-height:1.04;letter-spacing:-.02em;margin-top:14px;text-wrap:balance}
+  h1 .soft{color:var(--dim)}
+  .sub{color:var(--dim);margin-top:16px;max-width:56ch}
 
-  .steps { display:flex; gap:8px; margin:30px 0 26px; font-family:var(--mono); font-size:11px; color:var(--faint); }
-  .steps span { padding:6px 12px; border:1px solid var(--line); border-radius:999px; }
-  .steps span.on { color:var(--copper); border-color:rgba(242,146,107,0.5); }
-  .steps span.done { color:var(--ok); }
+  /* progress */
+  .rail{display:flex;gap:6px;margin:30px 0 26px}
+  .seg{flex:1;height:2px;background:var(--line);position:relative;overflow:hidden}
+  .seg i{position:absolute;inset:0;background:var(--copper);transform:scaleX(0);
+    transform-origin:left;transition:transform .45s ease}
+  .seg.done i,.seg.now i{transform:scaleX(1)}
+  .seg.now i{background:var(--copper)}
+  .railtxt{font-family:var(--mono);font-size:11px;color:var(--faint);
+    letter-spacing:.09em;margin-bottom:26px}
 
-  .stage { display:none; }
-  .stage.on { display:block; animation:rise .4s ease; }
-  @keyframes rise { from { opacity:0; transform:translateY(8px); } }
+  /* steps */
+  .step{display:none}
+  .step.on{display:block;animation:in .35s ease}
+  @keyframes in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  h2{font-family:var(--display);font-size:23px;font-weight:600;letter-spacing:-.01em}
+  .hint{color:var(--faint);font-size:14px;margin-top:6px;margin-bottom:24px}
 
-  h2 { font-family:var(--display); font-weight:500; font-size:20px; margin-bottom:6px; }
-  .sub { font-family:var(--mono); font-size:12px; color:var(--faint); margin-bottom:18px; line-height:1.6; }
+  .field{margin-bottom:20px}
+  label{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--dim);margin-bottom:8px}
+  input,textarea,select{width:100%;background:var(--panel);border:1px solid var(--line);
+    color:var(--text);font-family:var(--body);font-size:15px;padding:13px 14px;
+    border-radius:2px;transition:border-color .16s}
+  textarea{min-height:92px;resize:vertical;line-height:1.55}
+  input:focus,textarea:focus,select:focus{outline:none;border-color:var(--copper)}
+  input::placeholder,textarea::placeholder{color:var(--faint)}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:620px){.two{grid-template-columns:1fr}}
 
-  .plans { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
-  @media (max-width:760px){ .plans { grid-template-columns:1fr; } }
-  .plan { background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:20px; cursor:pointer; transition:border-color .25s; }
-  .plan:hover { border-color:var(--line-strong); }
-  .plan.sel { border-color:var(--copper); background:#141017; }
-  .plan .nm { font-family:var(--mono); font-size:10px; letter-spacing:0.14em; text-transform:uppercase; color:var(--copper); }
-  .plan .pr { font-family:var(--display); font-size:26px; font-weight:500; margin-top:6px; }
-  .plan .pu { font-family:var(--mono); font-size:10.5px; color:var(--faint); margin-top:2px; }
-  .plan p { font-size:13px; color:var(--dim); line-height:1.6; margin-top:10px; }
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{font-family:var(--mono);font-size:12px;letter-spacing:.04em;color:var(--dim);
+    background:var(--panel);border:1px solid var(--line);padding:9px 13px;
+    cursor:pointer;border-radius:2px;transition:all .16s;user-select:none}
+  .chip:hover{border-color:var(--line-strong);color:var(--text)}
+  .chip.on{border-color:var(--copper);color:var(--copper);background:var(--copper-dim)}
 
-  .chips { display:flex; flex-wrap:wrap; gap:10px; }
-  .chip { font-family:var(--mono); font-size:13px; color:var(--dim); border:1px solid var(--line); border-radius:999px; padding:10px 18px; cursor:pointer; transition:all .2s; user-select:none; }
-  .chip:hover { border-color:var(--line-strong); }
-  .chip.sel { color:var(--void); background:var(--copper); border-color:var(--copper); }
-  .chip.custom input { background:none; border:none; outline:none; color:inherit; font:inherit; width:130px; }
-  .hint { font-family:var(--mono); font-size:11px; color:var(--faint); margin-top:12px; }
+  .nav{display:flex;gap:12px;align-items:center;margin-top:32px;
+    padding-top:24px;border-top:1px solid var(--line)}
+  .btn{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+    font-weight:500;padding:14px 22px;border:1px solid var(--line-strong);
+    background:transparent;color:var(--text);cursor:pointer;border-radius:2px;
+    transition:all .16s}
+  .btn:hover{border-color:var(--copper);color:var(--copper)}
+  .btn.primary{background:var(--copper);border-color:var(--copper);color:#1a0f08;font-weight:600}
+  .btn.primary:hover{background:#f5a684;color:#1a0f08}
+  .btn:disabled{opacity:.4;cursor:not-allowed}
+  .btn.ghost{border-color:var(--line)}
+  .err{color:var(--copper);font-size:13px;margin-left:auto;font-family:var(--mono)}
 
-  .q { margin-bottom:18px; }
-  .q label { display:block; font-family:var(--mono); font-size:11.5px; letter-spacing:0.08em; text-transform:uppercase; color:var(--dim); margin-bottom:8px; }
-  .q input[type=text], .q textarea { width:100%; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:13px 16px; color:var(--text); font-family:var(--body); font-size:15px; outline:none; }
-  .q input:focus, .q textarea:focus { border-color:rgba(242,146,107,0.5); }
-  .q textarea { min-height:84px; resize:vertical; }
-  .row2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
-  @media (max-width:600px){ .row2 { grid-template-columns:1fr; } }
+  /* the recommendation */
+  .verdict{border:1px solid var(--line-strong);background:var(--panel);padding:0;margin-top:8px}
+  .vtop{padding:26px 28px;border-bottom:1px solid var(--line)}
+  .vlabel{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--copper)}
+  .vname{font-family:var(--display);font-size:clamp(26px,3.6vw,36px);font-weight:700;
+    letter-spacing:-.02em;margin-top:8px}
+  .vwhy{color:var(--dim);margin-top:12px;font-size:15px}
+  .vbody{padding:24px 28px}
+  .vrow{display:flex;gap:14px;padding:11px 0;border-bottom:1px solid var(--line);font-size:14.5px}
+  .vrow:last-child{border-bottom:none}
+  .vrow b{color:var(--text);font-weight:600;min-width:126px;font-family:var(--mono);
+    font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);
+    padding-top:3px}
+  .vrow span{color:var(--dim)}
+  .price{font-family:var(--mono);font-size:20px;color:var(--text);letter-spacing:-.01em}
+  .quoted{border-left:2px solid var(--copper);background:var(--copper-dim);
+    padding:16px 18px;margin-top:18px;font-size:14.5px;color:var(--dim)}
+  .quoted b{color:var(--text)}
 
-  .ctas { display:flex; gap:12px; margin-top:28px; flex-wrap:wrap; }
-  .btn { font-family:var(--display); font-size:12.5px; letter-spacing:0.15em; text-transform:uppercase; border-radius:10px; padding:15px 26px; cursor:pointer; border:none; text-decoration:none; display:inline-block; }
-  .btn.primary { color:var(--void); background:var(--copper); box-shadow:0 0 34px rgba(242,146,107,0.2); }
-  .btn.ghost { color:var(--dim); background:none; border:1px solid var(--line-strong); }
-  .btn:hover { filter:brightness(1.12); }
-  .btn:disabled { opacity:.4; cursor:not-allowed; }
+  .acts{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:22px}
+  @media(max-width:620px){.acts{grid-template-columns:1fr}}
+  .act{border:1px solid var(--line);background:var(--panel);padding:20px;
+    display:block;text-decoration:none;transition:border-color .16s;cursor:pointer;
+    text-align:left;font-family:var(--body);color:var(--text)}
+  .act:hover{border-color:var(--copper);text-decoration:none}
+  .act .k{font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--copper)}
+  .act .t{font-family:var(--display);font-size:17px;font-weight:600;margin-top:8px}
+  .act .d{color:var(--faint);font-size:13.5px;margin-top:5px;line-height:1.5}
 
-  .blueprint { background:var(--panel); border:1px solid var(--line); border-radius:14px; overflow:hidden; }
-  .blueprint header { display:flex; justify-content:space-between; padding:14px 20px; border-bottom:1px solid var(--line); font-family:var(--display); font-size:10.5px; letter-spacing:0.3em; text-transform:uppercase; color:var(--dim); }
-  .bp-body { padding:18px 20px; }
-  .bp-row { display:flex; gap:14px; padding:8px 0; border-bottom:1px solid rgba(155,193,224,0.06); font-size:14px; }
-  .bp-row:last-child { border:none; }
-  .bp-row .k { font-family:var(--mono); font-size:11px; color:var(--faint); width:120px; flex:none; padding-top:2px; text-transform:uppercase; letter-spacing:0.08em; }
-  .bp-row .v { color:var(--dim); line-height:1.6; }
-  .bp-row .v b { color:var(--text); font-weight:500; }
-  .bp-note { font-family:var(--mono); font-size:11px; color:var(--faint); margin-top:14px; line-height:1.7; }
-
-  /* Phone readability. This lives in the page rather than in madar.css because
-     the page style block loads after the stylesheet and was overriding it: the
-     first attempt at this fix changed nothing at all. Cascade order, not
-     specificity. */
-  @media (max-width:640px){
-    .nav .by{font-size:11.5px}
-    .label,.kick{font-size:11.5px!important;letter-spacing:.16em}
-    .under{font-size:12px}
-    .live .lh .t,.live .lf{font-size:11.5px}
-    .lr{font-size:12.5px;grid-template-columns:52px 1fr;gap:9px}
-    .lr .a{font-size:11.5px}
-    .glyph,.chip{font-size:12px}
-    .integ h4{font-size:11.5px}
-    .frow .k{font-size:11.5px}
-    .frow .v{font-size:14.5px}
-    .stat .k{font-size:12px}
-    .proof{font-size:15.5px}
-    .plan .for{font-size:11.5px}
-    .plan .price small{font-size:11px;letter-spacing:.06em}
-    .plan li,.pl p{font-size:14px}
-    td,th{font-size:12.5px}
-    footer,.foot,.note{font-size:12.5px}
-  }
+  .status{font-family:var(--mono);font-size:13px;margin-top:18px;color:var(--dim)}
+  .foot{border-top:1px solid var(--line);margin-top:60px;padding:26px 0 50px;
+    font-family:var(--mono);font-size:11px;color:var(--faint);letter-spacing:.08em}
+  @media(prefers-reduced-motion:reduce){.step.on{animation:none}.seg i{transition:none}}
 </style>
 </head>
 <body>
-<canvas id="sky" aria-hidden="true"></canvas>
-<div class="wrap">
-  <nav class="nav">
-    <span class="wordmark">madar<em>_os</em></span>
-    <span class="gap"></span>
-    <a href="products.html">products</a>
-    <a href="workspace.html">workspace</a>
-    <a href="os.html">walkthrough</a>
-    <a href="index.html">overview</a>
-  </nav>
 
-  <header class="head">
-    <div class="kick">Onboarding · three minutes</div>
-    <h1>Design your Madar.<span class="soft"> It takes the shape of your company.</span></h1>
-    <p class="lede">Madar is not a fixed set of departments. Pick a plan, choose the departments your structure actually needs, tell us how your business runs, then book the call where we build it with you.</p>
-  </header>
+<header class="top">
+  <div class="wrap topin">
+    <a class="mark" href="/">MADAR<i>_OS</i></a>
+    <a class="back" href="/">back to the site</a>
+  </div>
+</header>
 
-  <div class="steps">
-    <span id="st1" class="on">1 · plan</span>
-    <span id="st2">2 · departments</span>
-    <span id="st3">3 · your business</span>
-    <span id="st4">4 · blueprint</span>
+<main class="wrap">
+  <div class="lead">
+    <div class="eyebrow">Design your Madar</div>
+    <h1>Tell us how the work runs.<br><span class="soft">We will tell you which shape fits.</span></h1>
+    <p class="sub">Eight questions, about two minutes. No plan to choose and nothing to
+      install. At the end you get a recommendation with the reasoning attached, and a
+      way to talk to Ahmed directly.</p>
   </div>
 
-  <!-- STEP 1 -->
-  <section class="stage on" id="s1">
-    <h2>Choose your starting point</h2>
-    <p class="sub">every plan grows. departments can be added any time</p>
-    <div class="plans" id="plans">
-      <div class="plan" data-plan="Founder OS" data-price="$550/mo · $5,500 setup" data-max="3">
-        <div class="nm">Founder OS</div><div class="pr">$550</div><div class="pu">per month · setup $5,500</div>
-        <p>Solo founder or small business. Personal assistant plus departments of your choice.</p>
-      </div>
-      <div class="plan sel" data-plan="Business OS" data-price="$1,650/mo · $13,500 setup" data-max="99">
-        <div class="nm">Business OS · recommended</div><div class="pr">$1,650</div><div class="pu">per month · setup $13,500</div>
-        <p>The full team shaped to your org chart, Mission Control, email and WhatsApp wired in.</p>
-      </div>
-      <div class="plan" data-plan="Enterprise OS" data-price="from $5,500/mo · setup from $35,000" data-max="99">
-        <div class="nm">Enterprise OS</div><div class="pr">from $5,500</div><div class="pu">per month · setup from $35,000</div>
-        <p>Private deployment on your infrastructure, custom integrations, service agreement.</p>
-      </div>
-    </div>
-    <div class="ctas"><button class="btn primary" onclick="go(2)">Next · departments</button></div>
-  </section>
+  <div class="rail" id="rail" aria-hidden="true">
+    <div class="seg"><i></i></div><div class="seg"><i></i></div>
+    <div class="seg"><i></i></div><div class="seg"><i></i></div>
+  </div>
+  <div class="railtxt" id="railtxt">Step 1 of 3 · the business</div>
 
-  <!-- STEP 2 -->
-  <section class="stage" id="s2">
-    <h2>Pick your departments</h2>
-    <p class="sub" id="depSub">choose what your structure needs. add your own if it is missing</p>
-    <div class="chips" id="deps">
-      <span class="chip sel">personal assistant</span>
-      <span class="chip sel">marketing</span>
-      <span class="chip sel">sales</span>
-      <span class="chip sel">finance</span>
-      <span class="chip">customer service</span>
-      <span class="chip">people and hiring</span>
-      <span class="chip">operations</span>
-      <span class="chip">content studio</span>
-      <span class="chip">developer</span>
-      <span class="chip">procurement</span>
-      <span class="chip">legal admin</span>
-      <span class="chip custom">+ <input placeholder="your own department" onclick="event.stopPropagation()" onkeydown="customDep(event)"></span>
+  <!-- 1 ─ the business -->
+  <section class="step on" data-step="0">
+    <h2>Start with the business.</h2>
+    <p class="hint">Enough to understand the shape of it. Nothing is shared with anyone.</p>
+    <div class="two">
+      <div class="field"><label for="company">Company name</label>
+        <input id="company" placeholder="e.g. Marina Foods"></div>
+      <div class="field"><label for="industry">What it does</label>
+        <input id="industry" placeholder="e.g. food trading and distribution"></div>
     </div>
-    <p class="hint" id="depHint"></p>
-    <div class="ctas">
-      <button class="btn ghost" onclick="go(1)">Back</button>
-      <button class="btn primary" onclick="go(3)">Next · your business</button>
+    <div class="two">
+      <div class="field"><label for="team">How many people</label>
+        <input id="team" placeholder="e.g. 14" inputmode="numeric"></div>
+      <div class="field"><label for="geo">Where, and in which languages</label>
+        <input id="geo" placeholder="e.g. Oman · Arabic and English"></div>
+    </div>
+    <div class="field"><label for="profession">Your role</label>
+      <input id="profession" placeholder="e.g. founder, or operations director"></div>
+    <div class="nav">
+      <button class="btn primary" data-go="1">Continue</button>
+      <span class="err" id="e0"></span>
     </div>
   </section>
 
-  <!-- STEP 3 -->
-  <section class="stage" id="s3">
-    <h2>How your business runs</h2>
-    <p class="sub">short answers are fine. the real depth happens on the setup call</p>
-    <div class="row2">
-      <div class="q"><label>Your name</label><input type="text" id="qName" placeholder="e.g. Layla Hassan"></div>
-      <div class="q"><label>Email · where your reply arrives</label><input type="text" id="qEmail" placeholder="you@company.com"></div>
+  <!-- 2 ─ the work -->
+  <section class="step" data-step="1">
+    <h2>Now the part that eats your week.</h2>
+    <p class="hint">This is what decides the recommendation, so be specific.</p>
+    <div class="field"><label for="pain">What takes the most time and gives the least back</label>
+      <textarea id="pain" placeholder="e.g. chasing invoices, answering the same customer questions, writing the same reports every month"></textarea></div>
+    <div class="field"><label>Which of these would you hand over first</label>
+      <div class="chips" id="depts">
+        <span class="chip" data-v="sales">sales</span>
+        <span class="chip" data-v="marketing">marketing</span>
+        <span class="chip" data-v="customer service">customer service</span>
+        <span class="chip" data-v="finance and invoicing">finance and invoicing</span>
+        <span class="chip" data-v="operations">operations</span>
+        <span class="chip" data-v="people and hiring">people and hiring</span>
+        <span class="chip" data-v="legal admin">legal admin</span>
+        <span class="chip" data-v="content studio">content studio</span>
+        <span class="chip" data-v="personal assistant">personal assistant</span>
+      </div></div>
+    <div class="two">
+      <div class="field"><label for="channels">Where customers reach you</label>
+        <input id="channels" placeholder="e.g. whatsapp, email, instagram"></div>
+      <div class="field"><label for="tools">Tools you already pay for</label>
+        <input id="tools" placeholder="e.g. excel, quickbooks, gmail"></div>
     </div>
-    <div class="row2">
-      <div class="q"><label>Company name</label><input type="text" id="qCompany" placeholder="e.g. Marina Foods"></div>
-      <div class="q"><label>Industry</label><input type="text" id="qIndustry" placeholder="e.g. food trading"></div>
-    </div>
-    <div class="row2">
-      <div class="q"><label>Team size</label><input type="text" id="qTeam" placeholder="e.g. 6 people"></div>
-      <div class="q"><label>Country and languages</label><input type="text" id="qGeo" placeholder="e.g. UAE · English and Arabic"></div>
-    </div>
-    <div class="q"><label>Where clients reach you</label>
-      <div class="chips" id="channels">
-        <span class="chip sel">email</span><span class="chip sel">whatsapp</span><span class="chip">instagram</span><span class="chip">linkedin</span><span class="chip">phone calls</span><span class="chip">walk in</span>
-      </div>
-    </div>
-    <div class="row2">
-      <div class="q"><label>Your profession or role</label><input type="text" id="qProfession" placeholder="e.g. founder and lead designer"></div>
-      <div class="q"><label>Tools you use daily</label><input type="text" id="qTools" placeholder="e.g. excel, whatsapp, quickbooks, canva"></div>
-    </div>
-    <div class="q"><label>Where should your Madar live?</label>
-      <div class="chips" id="infraChips">
-        <span class="chip">my own device</span><span class="chip sel">managed cloud</span><span class="chip">private cloud</span><span class="chip">not sure</span>
-      </div>
-    </div>
-    <div class="q"><label>What steals most of your week?</label><textarea id="qPain" placeholder="e.g. chasing invoices, replying to the same questions, posting content, following up leads"></textarea></div>
-    <div class="ctas">
-      <button class="btn ghost" onclick="go(2)">Back</button>
-      <button class="btn primary" onclick="go(4)">Build my blueprint</button>
+    <div class="nav">
+      <button class="btn ghost" data-go="0">Back</button>
+      <button class="btn primary" data-go="2">Continue</button>
+      <span class="err" id="e1"></span>
     </div>
   </section>
 
-  <!-- STEP 4 -->
-  <section class="stage" id="s4">
-    <h2>Your Madar, on paper</h2>
-    <p class="sub">this blueprint arrives with you at the setup call</p>
-    <div class="blueprint">
-      <header><span>madar blueprint</span><span id="bpDate"></span></header>
-      <div class="bp-body" id="bpBody"></div>
+  <!-- 3 ─ where it runs, and you -->
+  <section class="step" data-step="2">
+    <h2>Where should it live, and who are you?</h2>
+    <p class="hint">If you are not sure where it should run, say so. That is a normal answer.</p>
+    <div class="field"><label>Where it runs</label>
+      <div class="chips" id="infra">
+        <span class="chip" data-v="not sure">not sure yet</span>
+        <span class="chip" data-v="managed cloud">managed for me</span>
+        <span class="chip" data-v="private cloud">a private server that is mine</span>
+        <span class="chip" data-v="on premise">on our own hardware, nothing leaves</span>
+      </div></div>
+    <div class="two">
+      <div class="field"><label for="name">Your name</label>
+        <input id="name" placeholder="e.g. Layla Hassan"></div>
+      <div class="field"><label for="email">Email, where the reply lands</label>
+        <input id="email" type="email" placeholder="you@company.com"></div>
     </div>
-    <p class="bp-note" id="bpStatus">send the blueprint and it lands with our team instantly. you get a personal reply with the booking link within minutes. Our own OS answers you; that is the product.</p>
-    <div class="ctas">
-      <button class="btn primary" id="sendBtn" onclick="sendLead()">Send blueprint + book the call</button>
-      <a class="btn ghost" id="mailBtn" href="#">Email it manually instead</a>
-      <button class="btn ghost" onclick="go(3)">Back</button>
+    <div class="nav">
+      <button class="btn ghost" data-go="1">Back</button>
+      <button class="btn primary" id="finish">See what fits</button>
+      <span class="err" id="e2"></span>
     </div>
   </section>
-</div>
+
+  <!-- 4 ─ the recommendation -->
+  <section class="step" data-step="3">
+    <div class="verdict">
+      <div class="vtop">
+        <div class="vlabel">Based on your answers</div>
+        <div class="vname" id="planName">Founder OS</div>
+        <p class="vwhy" id="planWhy"></p>
+      </div>
+      <div class="vbody">
+        <div class="vrow"><b>Covers</b><span id="planCovers"></span></div>
+        <div class="vrow"><b>Runs on</b><span id="planInfra"></span></div>
+        <div class="vrow" id="priceRow"><b>Indicative</b><span class="price" id="planPrice"></span></div>
+      </div>
+    </div>
+
+    <div class="quoted" id="quoted" style="display:none">
+      <b>No number on this page, on purpose.</b> At this size the answer depends on your
+      systems, your data residency and your security requirements, and quoting before that
+      conversation would be guessing. Talk to Ahmed, then a written proposal and quotation
+      follow.
+    </div>
+
+    <div class="acts">
+      <a class="act" id="bookAct" href="#" target="_blank" rel="noopener">
+        <div class="k">Talk it through</div>
+        <div class="t">Book twenty minutes with Ahmed</div>
+        <div class="d">Straight to the founder, not a sales desk. Bring the messy version of the problem.</div>
+      </a>
+      <a class="act" id="askAct" href="#">
+        <div class="k">Not ready for a call</div>
+        <div class="t">Ask a question instead</div>
+        <div class="d">Reply to the email you are about to receive, or write now. Answered by a person.</div>
+      </a>
+    </div>
+
+    <div class="status" id="status"></div>
+    <div class="nav">
+      <button class="btn ghost" data-go="2">Change an answer</button>
+    </div>
+  </section>
+
+  <div class="foot">Madar OS · by TSB Labs · your answers are used to prepare your recommendation, nothing else</div>
+</main>
 
 <script>
-  /* ONE PLACE TO CHANGE THE BOOKING LINK */
-  const CALENDLY = "https://calendly.com/ahmedyahyak/20mins";
+(function(){
+'use strict';
+var CALENDLY="https://calendly.com/ahmedyahyak/20mins";
+var ASK="mailto:ahmed@devmatesolutions.com?subject=Question%20about%20Madar%20OS";
+var LABELS=["Step 1 of 3 · the business","Step 2 of 3 · the work",
+            "Step 3 of 3 · where it runs","Your recommendation"];
+var state={depts:[],infra:""};
+var cur=0;
 
-  const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const sky = document.getElementById("sky"), sctx = sky.getContext("2d");
-  let stars = [];
-  function skySize() {
-    sky.width = innerWidth * devicePixelRatio; sky.height = innerHeight * devicePixelRatio;
-    stars = Array.from({length:90}, () => ({ x:Math.random()*sky.width, y:Math.random()*sky.height, r:(Math.random()*1.1+0.3)*devicePixelRatio, p:Math.random()*Math.PI*2, s:0.004+Math.random()*0.01 }));
-  }
-  skySize(); addEventListener("resize", skySize);
-  (function draw(){ sctx.clearRect(0,0,sky.width,sky.height); for (const st of stars){ st.p+=st.s; sctx.beginPath(); sctx.arc(st.x,st.y,st.r,0,7); sctx.fillStyle="rgba(155,193,224,"+(0.1+0.26*(0.5+Math.sin(st.p)/2)).toFixed(3)+")"; sctx.fill(); } if(!reduced) requestAnimationFrame(draw); })();
+function show(i){
+  cur=i;
+  document.querySelectorAll('.step').forEach(function(s){
+    s.classList.toggle('on', +s.dataset.step===i); });
+  document.querySelectorAll('#rail .seg').forEach(function(s,k){
+    s.classList.toggle('done',k<i); s.classList.toggle('now',k===i); });
+  document.getElementById('railtxt').textContent=LABELS[i];
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function val(id){ var e=document.getElementById(id); return e?e.value.trim():''; }
+function warn(id,msg){
+  var e=document.getElementById(id); e.textContent=msg;
+  setTimeout(function(){ e.textContent=''; },4000);
+}
 
-  const state = { step:1, plan:"Business OS", price:"$1,650/mo · $13,500 setup", max:99 };
+/* multi select chips */
+document.getElementById('depts').addEventListener('click',function(e){
+  var c=e.target.closest('.chip'); if(!c) return;
+  c.classList.toggle('on');
+  var v=c.dataset.v, i=state.depts.indexOf(v);
+  if(i<0) state.depts.push(v); else state.depts.splice(i,1);
+});
+/* single select chips */
+document.getElementById('infra').addEventListener('click',function(e){
+  var c=e.target.closest('.chip'); if(!c) return;
+  this.querySelectorAll('.chip').forEach(function(x){ x.classList.remove('on'); });
+  c.classList.add('on'); state.infra=c.dataset.v;
+});
 
-  document.querySelectorAll("#plans .plan").forEach(p => {
-    p.onclick = () => {
-      document.querySelectorAll("#plans .plan").forEach(x => x.classList.remove("sel"));
-      p.classList.add("sel");
-      state.plan = p.dataset.plan; state.price = p.dataset.price; state.max = +p.dataset.max;
-      updateHint();
-    };
-  });
-
-  function selDeps() { return [...document.querySelectorAll("#deps .chip.sel")].map(c => c.textContent.trim()); }
-  function updateHint() {
-    const n = selDeps().length;
-    document.getElementById("depHint").textContent =
-      state.max < 99 && n > state.max
-        ? "Founder OS includes " + state.max + " departments, you picked " + n + ". Keep them all and we will quote the difference on the call."
-        : n + " departments selected · " + state.plan;
-  }
-  document.querySelectorAll("#deps .chip:not(.custom), #channels .chip").forEach(c => {
-    c.onclick = () => { c.classList.toggle("sel"); updateHint(); };
-  });
-  document.querySelectorAll("#infraChips .chip").forEach(c => {
-    c.onclick = () => {
-      document.querySelectorAll("#infraChips .chip").forEach(x => x.classList.remove("sel"));
-      c.classList.add("sel");
-    };
-  });
-  function customDep(e) {
-    if (e.key !== "Enter" || !e.target.value.trim()) return;
-    const v = e.target.value.trim().toLowerCase();
-    const chip = document.createElement("span");
-    chip.className = "chip sel"; chip.textContent = v;
-    chip.onclick = () => { chip.classList.toggle("sel"); updateHint(); };
-    document.getElementById("deps").insertBefore(chip, e.target.parentElement);
-    e.target.value = ""; updateHint();
-  }
-
-  function go(n) {
-    if (n === 4) buildBlueprint();
-    state.step = n;
-    for (let i = 1; i <= 4; i++) {
-      document.getElementById("s"+i).classList.toggle("on", i === n);
-      const st = document.getElementById("st"+i);
-      st.className = i < n ? "done" : i === n ? "on" : "";
+document.querySelectorAll('[data-go]').forEach(function(b){
+  b.addEventListener('click',function(){
+    var to=+b.dataset.go;
+    if(to>cur){
+      if(cur===0 && (!val('company')||!val('team')))
+        return warn('e0','company and team size, then we can continue');
+      if(cur===1 && !val('pain') && state.depts.length===0)
+        return warn('e1','one sentence or one chip, either is enough');
     }
-    scrollTo({ top: 0, behavior: reduced ? "auto" : "smooth" });
-  }
+    show(to);
+  });
+});
 
-  function v(id) { return document.getElementById(id).value.trim(); }
-  function buildBlueprint() {
-    const deps = selDeps();
-    const chans = [...document.querySelectorAll("#channels .chip.sel")].map(c => c.textContent.trim());
-    document.getElementById("bpDate").textContent = new Date().toISOString().slice(0,10);
-    const rows = [
-      ["plan", "<b>" + state.plan + "</b> · " + state.price],
-      ["departments", deps.map(d => "<b>" + d + "</b>").join(" · ") + " <span style='color:var(--faint)'>(" + deps.length + ", grows any time)</span>"],
-      ["company", (v("qCompany") || "not set") + (v("qIndustry") ? " · " + v("qIndustry") : "")],
-      ["team", (v("qTeam") || "not set") + (v("qGeo") ? " · " + v("qGeo") : "")],
-      ["profession", v("qProfession") || "not set"],
-      ["tools", v("qTools") || "not set"],
-      ["infrastructure", document.querySelector("#infraChips .chip.sel").textContent],
-      ["channels", chans.join(" · ") || "not set"],
-      ["biggest drain", v("qPain") || "not set"],
-    ];
-    document.getElementById("bpBody").innerHTML = rows.map(([k, val]) =>
-      '<div class="bp-row"><span class="k">' + k + '</span><span class="v">' + val + "</span></div>").join("");
+/* ── the recommendation ────────────────────────────────────────────────
+   Team size sets the floor, the number of functions and the hosting
+   requirement can lift it. Regulated sectors go straight to Enterprise
+   because the answer there is a conversation, not a price.            */
+var PLANS={
+  launch:{name:"Launch OS", price:"$175 a month · $950 to set up",
+    covers:"One department plus a personal assistant, wired into the tools you already use."},
+  founder:{name:"Founder OS", price:"$550 a month · $5,500 to set up",
+    covers:"Up to three departments plus a personal assistant, email wired in, and a monthly tune up."},
+  business:{name:"Business OS", price:"$1,650 a month · $13,500 to set up",
+    covers:"The full department team, Mission Control, email and WhatsApp wired in, and a monthly evolution sprint."},
+  enterprise:{name:"Enterprise OS", price:"",
+    covers:"Everything in Business OS, plus audit trail, single sign on, data residency and a private deployment."}
+};
+var REGULATED=/bank|financ|insur|govern|ministry|health|clinic|hospital|pharma|defen|energy|petrochem|utility|telecom|aviation|port|customs/i;
 
-    const summary =
-      "MADAR BLUEPRINT\n" +
-      "Plan: " + state.plan + " (" + state.price + ")\n" +
-      "Departments: " + deps.join(", ") + "\n" +
-      "Company: " + v("qCompany") + " · " + v("qIndustry") + "\n" +
-      "Team: " + v("qTeam") + " · " + v("qGeo") + "\n" +
-      "Channels: " + chans.join(", ") + "\n" +
-      "Biggest drain: " + v("qPain");
-    window.__blueprint = {
-      name: v("qName"), email: v("qEmail"),
-      company: v("qCompany"), industry: v("qIndustry"),
-      team: v("qTeam"), geo: v("qGeo"),
-      plan: state.plan + " (" + state.price + ")",
-      departments: deps.join(", "), channels: chans.join(", "),
-      pain: v("qPain"),
-      profession: v("qProfession"),
-      tools: v("qTools"),
-      infra: document.querySelector("#infraChips .chip.sel").textContent,
-    };
-    document.getElementById("mailBtn").href =
-      "mailto:ahmed@devmatesolutions.com?subject=" + encodeURIComponent("Madar OS blueprint · " + (v("qCompany") || "new client")) +
-      "&body=" + encodeURIComponent(summary);
-  }
-  async function sendLead() {
-    const bp = window.__blueprint || {};
-    const st = document.getElementById("bpStatus");
-    const btn = document.getElementById("sendBtn");
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(bp.email || "")) {
-      st.textContent = "add your email in step 3 first, so the reply has somewhere to land";
-      st.style.color = "var(--copper)";
-      return;
-    }
-    btn.disabled = true; btn.textContent = "sending…";
-    try {
-      const r = await fetch("/api/lead", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(bp),
-      });
-      if (!r.ok) throw new Error();
-      st.textContent = "blueprint received. your reply is on its way, and you can grab a slot right now:";
-      st.style.color = "var(--ok)";
-      btn.textContent = "Book the call now";
-      btn.disabled = false;
-      btn.onclick = () => open(CALENDLY, "_blank");
-    } catch {
-      // A sentence the visitor has to notice is not a fallback. Make the
-      // pre filled email the button they are already looking at, so the
-      // blueprint reaches a human either way.
-      st.textContent = "we could not file that automatically. your blueprint is ready to send by email instead, nothing is lost:";
-      st.style.color = "var(--copper)";
-      btn.textContent = "Email my blueprint instead";
-      btn.disabled = false;
-      btn.onclick = () => { location.href = document.getElementById("mailBtn").href; };
-    }
-  }
+function decide(){
+  var n=parseInt(val('team').replace(/[^0-9]/g,''),10);
+  if(isNaN(n)) n=1;
+  var d=state.depts.length;
+  var infra=state.infra||'not sure';
+  var reg=REGULATED.test(val('industry')+' '+val('company'));
+  var why=[];
 
-  updateHint();
+  var key='launch';
+  if(n<=3 && d<=1){ key='launch'; why.push('a team of '+n+' with one area to hand over'); }
+  else if(n<=20 || d<=3){ key='founder'; why.push('a team of '+n+(d?' and '+d+' areas to hand over':'')); }
+  else { key='business'; why.push('a team of '+n+(d?' and '+d+' areas to hand over':'')); }
+
+  if(n>100){ key='enterprise'; why=['a team of '+n]; }
+  if(d>=5 && key!=='enterprise'){ key='business'; }
+  if(infra==='on premise'||infra==='private cloud'){
+    if(key==='launch'||key==='founder') key='business';
+    if(n>50||reg) key='enterprise';
+    why.push(infra==='on premise'?'and it has to run on your own hardware':'and it needs a server that is yours alone');
+  }
+  if(reg){ key='enterprise'; why.push('in a sector where residency and audit are not optional'); }
+
+  return {key:key, why:why.join(', ')};
+}
+
+document.getElementById('finish').addEventListener('click',function(){
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val('email')))
+    return warn('e2','we need an email, otherwise the recommendation has nowhere to go');
+  if(!val('name')) return warn('e2','and a name, so the reply is not addressed to nobody');
+
+  var r=decide(), p=PLANS[r.key];
+  document.getElementById('planName').textContent=p.name;
+  document.getElementById('planWhy').textContent='You told us '+r.why+'. That is the shape '+p.name+' is built for.';
+  document.getElementById('planCovers').textContent=p.covers;
+  document.getElementById('planInfra').textContent=
+    state.infra==='not sure' ? 'We will work that out together on the call.' :
+    state.infra==='on premise' ? 'Your own hardware. Nothing rented, nothing hosted by anyone else.' :
+    state.infra==='private cloud' ? 'A server that is yours alone, set up and patched by us.' :
+    'Managed for you, so there is nothing for your team to run.';
+
+  var isEnt = r.key==='enterprise';
+  document.getElementById('priceRow').style.display = isEnt ? 'none' : 'flex';
+  document.getElementById('quoted').style.display  = isEnt ? 'block' : 'none';
+  if(!isEnt) document.getElementById('planPrice').textContent=p.price;
+
+  document.getElementById('bookAct').href=CALENDLY;
+  document.getElementById('askAct').href=ASK;
+  show(3);
+
+  /* file the lead, same contract the SDR loop already reads */
+  var body={ name:val('name'), email:val('email'), company:val('company'),
+    industry:val('industry'), team:val('team'), geo:val('geo'),
+    plan:p.name, departments:state.depts.join(', '), channels:val('channels'),
+    pain:val('pain'), profession:val('profession'), infra:state.infra||'not sure' };
+  var st=document.getElementById('status');
+  st.textContent='sending your answers…';
+  fetch('/api/lead',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(body)})
+    .then(function(res){ if(!res.ok) throw new Error();
+      st.textContent='Sent. A written version of this is on its way to '+val('email')+'.';
+      st.style.color='var(--ok)'; })
+    .catch(function(){
+      st.innerHTML='We could not send that automatically. Nothing is lost: '+
+        '<a href="'+ASK+'">email Ahmed directly</a> and mention '+p.name+'.';
+      st.style.color='var(--copper)'; });
+});
+})();
 </script>
 </body>
 </html>
