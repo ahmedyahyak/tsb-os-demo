@@ -118,6 +118,41 @@
     td,th{font-size:12.5px}
     footer,.foot,.note{font-size:12.5px}
   }
+
+  /* ── the orbit ─────────────────────────────────────────────────────────
+     Full bleed, placed straight after the switchboard idea, because that is
+     the moment the reader has understood the claim and wants to see it. */
+  .orbit-band{border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+    background:linear-gradient(180deg,var(--panel),var(--void) 70%)}
+  .orbit-head{padding:64px 0 26px;max-width:60ch}
+  .orbit-head .label{color:var(--copper)}
+  .orbit-head h2{font-family:var(--display);font-size:clamp(24px,3.3vw,36px);
+    font-weight:700;letter-spacing:-.02em;line-height:1.08;margin-top:12px}
+  .orbit-head p{color:var(--dim);margin-top:14px}
+  .orbit-grid{display:grid;grid-template-columns:1.45fr .8fr;gap:0;
+    border:1px solid var(--line);margin-bottom:64px;background:var(--void)}
+  @media(max-width:900px){.orbit-grid{grid-template-columns:1fr}}
+  .orbit-hold{position:relative;min-height:480px}
+  @media(max-width:900px){.orbit-hold{min-height:380px}}
+  #orbit{width:100%;height:100%;position:absolute;inset:0;cursor:grab;touch-action:none}
+  #orbit.drag{cursor:grabbing}
+  .ob-hint{position:absolute;left:18px;bottom:16px;font-family:var(--mono);
+    font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);
+    border:1px solid var(--line);padding:6px 10px;transition:opacity .6s;pointer-events:none}
+  .ob-hint.gone{opacity:0}
+  .ob-panel{border-left:1px solid var(--line);padding:30px;display:flex;
+    flex-direction:column;justify-content:center;gap:14px;min-height:480px}
+  @media(max-width:900px){.ob-panel{border-left:none;border-top:1px solid var(--line);min-height:0}}
+  .ob-kind{font-family:var(--mono);font-size:10px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--ice)}
+  .ob-title{font-family:var(--display);font-size:22px;font-weight:700;
+    letter-spacing:-.015em;line-height:1.15}
+  .ob-body{color:var(--dim);font-size:14.5px;line-height:1.6}
+  .ob-legend{margin-top:8px;padding-top:16px;border-top:1px solid var(--line);
+    display:grid;gap:8px;font-family:var(--mono);font-size:10.5px;color:var(--faint);
+    letter-spacing:.05em}
+  .ob-legend span{display:flex;align-items:center;gap:9px}
+  .ob-legend i{width:7px;height:7px;border-radius:50%;flex:none}
 </style>
 </head>
 <body>
@@ -149,7 +184,7 @@
       <div class="label">For owner operators, 20 to 200 people</div>
       <h1>Runs the work that repeats.<br><span class="soft">Waits for your yes on anything it cannot undo.</span></h1>
       <p class="lede">The outreach, the client records, the documents, the follow ups. It connects to the tools you already pay for, learns how your business actually works, and gets on with the parts that repeat every week.</p>
-      <p class="say">It does the work.<br>You keep the last word.</p>
+      <p class="say">Software gives you tools. This gives you staff.<br>It does the work. You keep the last word.</p>
       <div class="btns">
         <a class="btn primary" href="workspace.html">Open a live workspace</a>
         <a class="btn ghost" href="start.html">Design your Madar</a>
@@ -175,6 +210,35 @@
     <p class="side">Not a chatbot you visit, and not a workflow you maintain. A set of departments that already know how your company works, doing the repeatable half of the day while you keep the half that needs judgment.</p>
   </div>
 </section>
+
+<!-- ============================================================== orbit -->
+<section class="orbit-band">
+  <div class="wrap">
+    <div class="orbit-head">
+      <div class="label">The context graph</div>
+      <h2>Everything it knows, held in orbit around you.</h2>
+      <p>This is not a diagram of the product. It is the product. Your clients, your
+        people, the rules you set and the things waiting on your word, all kept in one
+        place so no department has to ask you twice. Drag it. Click anything.</p>
+    </div>
+    <div class="orbit-grid">
+      <div class="orbit-hold">
+        <canvas id="orbit" aria-label="Your business in orbit. Drag to rotate, click a body to read it."></canvas>
+        <div class="ob-hint" id="obHint">Drag to rotate · click a body</div>
+      </div>
+      <div class="ob-panel">
+        <div class="ob-kind" id="obKind">waiting on your word</div>
+        <div class="ob-title" id="obTitle">Invoice 2214</div>
+        <p class="ob-body" id="obBody"></p>
+        <div class="ob-legend">
+          <span><i style="background:var(--copper)"></i>copper is you, and anything that needs you</span>
+          <span><i style="background:var(--ice)"></i>ice is what the system holds on its own</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 
 <!-- ======================================================= what it is -->
 <section class="band band-glow">
@@ -379,5 +443,6 @@
   })();
 })();
 </script>
+<script defer src="/assets/orbit.js"></script>
 </body>
 </html>

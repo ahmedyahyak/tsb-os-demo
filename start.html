@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Design your Madar · Madar OS</title>
+<title>Design your Madar · your blueprint · Madar OS</title>
 <meta name="description" content="Answer a few questions about how your business actually runs. We tell you which shape of Madar OS fits, and why.">
 <meta name="robots" content="noindex">
 <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
@@ -144,7 +144,7 @@
     <div class="eyebrow">Design your Madar</div>
     <h1>Tell us how the work runs.<br><span class="soft">We will tell you which shape fits.</span></h1>
     <p class="sub">Eight questions, about two minutes. No plan to choose and nothing to
-      install. At the end you get a recommendation with the reasoning attached, and a
+      install. At the end you get your blueprint, with the reasoning attached, and a
       way to talk to Ahmed directly.</p>
   </div>
 
@@ -237,7 +237,7 @@
   <section class="step" data-step="3">
     <div class="verdict">
       <div class="vtop">
-        <div class="vlabel">Based on your answers</div>
+        <div class="vlabel">Your blueprint / based on your answers</div>
         <div class="vname" id="planName">Founder OS</div>
         <p class="vwhy" id="planWhy"></p>
       </div>
@@ -404,7 +404,7 @@ document.getElementById('finish').addEventListener('click',function(){
   fetch('/api/lead',{method:'POST',headers:{'Content-Type':'application/json'},
     body:JSON.stringify(body)})
     .then(function(res){ if(!res.ok) throw new Error();
-      st.textContent='Sent. A written version of this is on its way to '+val('email')+'.';
+      st.textContent='Sent. A written copy of your blueprint is on its way to '+val('email')+'.';
       st.style.color='var(--ok)'; })
     .catch(function(){
       st.innerHTML='We could not send that automatically. Nothing is lost: '+
