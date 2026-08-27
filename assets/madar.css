@@ -62,6 +62,10 @@ h1{font-size:var(--t-hero)}
 h2{font-size:var(--t-h2)}
 h3{font-size:var(--t-h3);letter-spacing:-.01em}
 .soft{color:var(--faint)}
+/* In a headline .soft carries the differentiating claim, and --faint sits at
+   2.97:1 which fails the 3:1 floor even for large text. Headings get the
+   readable tone; --faint stays for genuine small print. */
+h1 .soft,h2 .soft,.hero h1 .soft{color:var(--dim)}
 .lede{font-size:var(--t-lede);color:var(--dim);line-height:1.7;max-width:60ch}
 .lede b,.lede strong{color:var(--text);font-weight:500}
 .label{font-family:var(--mono);font-size:var(--t-label);letter-spacing:.2em;text-transform:uppercase;color:var(--copper)}
