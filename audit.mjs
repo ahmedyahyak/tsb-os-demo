@@ -22,7 +22,10 @@ import { extname, join } from 'node:path';
 const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 const WIDTHS = [390, 768, 1440];
 const ROOT = process.cwd();
-const PORT = 8991;
+/* Port 0 lets the OS pick a free one. It was hardcoded, which meant two
+   copies of this tool running at once, one per repo, collided on the same
+   port and the second died with EADDRINUSE mid audit. */
+let PORT = 0;
 
 const PROBE = `
 <script>
@@ -97,30 +100,56 @@ const pages = readdirSync(ROOT).filter((f) => f.endsWith('.html') && !f.startsWi
   .map((f) => f.replace('.html', ''))
   .filter((p) => !only || p === only);
 
-server.listen(PORT, async () => {
-  let fails = 0;
+/* Chrome launches run concurrently. Serially this took 89 seconds for nine
+   pages, and a verification loop that slow stops being run, which defeats the
+   whole point of having it. Six at a time keeps the machine responsive. */
+const LANES = Number(process.env.LANES || 6);
+async function pool(jobs, limit) {
+  const out = new Array(jobs.length);
+  let next = 0;
+  await Promise.all(Array.from({ length: Math.min(limit, jobs.length) }, async () => {
+    while (next < jobs.length) {
+      const i = next++;
+      out[i] = await jobs[i]();
+    }
+  }));
+  return out;
+}
+
+server.listen(0, async () => {
+  PORT = server.address().port;
+  const tmps = [];
+  const jobs = [];
   for (const page of pages) {
     const src = readFileSync(join(ROOT, `${page}.html`), 'utf8');
     const tmp = join(ROOT, `_audit_${page}.html`);
     writeFileSync(tmp, src.replace('</body>', `${PROBE}</body>`));
+    tmps.push(tmp);
     for (const w of WIDTHS) {
-      const r = await render(`http://localhost:${PORT}/_audit_${page}.html`, w);
-      if (!r) { console.log(`  ${page.padEnd(16)} ${String(w).padEnd(5)} probe failed`); continue; }
-      const bits = [];
-      if (r.overflow) bits.push(`PAGE SCROLLS SIDEWAYS by ${r.overflow}px`);
-      if (r.clipped.length) bits.push(`clipped: ${r.clipped[0]}`);
-      if (r.tiny.length) bits.push(`${r.tiny.length} under 12px`);
-      if (r.contrast.length) bits.push(`${r.contrast.length} under contrast floor`);
-      if (bits.length) fails++;
-      console.log(`  ${page.padEnd(16)} ${String(w).padEnd(5)} ${bits.length ? bits.join(' | ') : 'clean'}`);
-      if (process.env.VERBOSE && bits.length) {
-        [...r.clipped, ...r.tiny.slice(0, 6), ...r.contrast.slice(0, 6)]
-          .forEach((x) => console.log(`        ${x}`));
-      }
+      jobs.push(async () => ({ page, w, r: await render(`http://localhost:${PORT}/_audit_${page}.html`, w) }));
     }
-    unlinkSync(tmp);
   }
-  console.log(`\n  ${fails} page/width combinations have findings`);
+
+  const started = Date.now();
+  const results = await pool(jobs, LANES);
+  tmps.forEach((t) => { try { unlinkSync(t); } catch {} });
+
+  let fails = 0;
+  for (const { page, w, r } of results) {
+    if (!r) { console.log(`  ${page.padEnd(16)} ${String(w).padEnd(5)} probe failed`); continue; }
+    const bits = [];
+    if (r.overflow) bits.push(`PAGE SCROLLS SIDEWAYS by ${r.overflow}px`);
+    if (r.clipped.length) bits.push(`clipped: ${r.clipped[0]}`);
+    if (r.tiny.length) bits.push(`${r.tiny.length} under 12px`);
+    if (r.contrast.length) bits.push(`${r.contrast.length} under contrast floor`);
+    if (bits.length) fails++;
+    console.log(`  ${page.padEnd(16)} ${String(w).padEnd(5)} ${bits.length ? bits.join(' | ') : 'clean'}`);
+    if (process.env.VERBOSE && bits.length) {
+      [...r.clipped, ...r.tiny.slice(0, 6), ...r.contrast.slice(0, 6)]
+        .forEach((x) => console.log(`        ${x}`));
+    }
+  }
+  console.log(`\n  ${fails} page/width combinations have findings  ·  ${((Date.now() - started) / 1000).toFixed(1)}s`);
   server.close();
   process.exit(fails ? 1 : 0);
 });

@@ -316,38 +316,118 @@
     { n: "Sara", k: "person", o: 140, a: 4.9 },
   ];
   let lit = new Set();
+
+  /* Real 3D, not a squashed circle. مدار means orbit and the mark is a ring
+     with a copper satellite, so the context graph IS the mark: your business
+     held in orbit around you. Three shells on their own planes, perspective
+     projection, depth sorted so near bodies sit over far ones. Drag to turn it.
+
+     Copper is you and anything the running command has lit; ice is what the
+     system holds on its own. `lit` is still driven by the demo script, so the
+     scripted walkthrough behaves exactly as before. */
+  const SHELL = { co: 58, deal: 102, proj: 102, person: 140, core: 0 };
+  nodes.forEach((nd) => {
+    nd.r = SHELL[nd.k] ?? nd.o;
+    nd.tilt = nd.k === "person" ? 0.62 : nd.k === "co" ? 0.24 : 0.44;
+    nd.sp = nd.r ? 0.000042 * (60 / nd.r) : 0;
+  });
+
+  const gv = { ang: -0.55, tilt: 0.66, spin: 0 };
+  (function orbitDrag() {
+    let down = false, px = 0, py = 0;
+    g.style.touchAction = "none";
+    g.style.cursor = "grab";
+    g.addEventListener("pointerdown", (e) => {
+      down = true; px = e.clientX; py = e.clientY; g.style.cursor = "grabbing";
+      try { g.setPointerCapture(e.pointerId); } catch (_) {}
+    });
+    g.addEventListener("pointermove", (e) => {
+      if (!down) return;
+      gv.ang -= (e.clientX - px) * 0.007;
+      gv.tilt = Math.max(-0.15, Math.min(1.0, gv.tilt + (e.clientY - py) * 0.004));
+      gv.spin = -(e.clientX - px) * 0.0004;
+      px = e.clientX; py = e.clientY;
+    });
+    const up = (e) => {
+      down = false; g.style.cursor = "grab";
+      try { g.releasePointerCapture(e.pointerId); } catch (_) {}
+    };
+    g.addEventListener("pointerup", up);
+    g.addEventListener("pointercancel", up);
+  })();
+
+  function gProject(x, y, z, w, h, sc) {
+    const ca = Math.cos(gv.ang), sa = Math.sin(gv.ang);
+    const rx = x * ca - z * sa, rz = x * sa + z * ca;
+    const ct = Math.cos(gv.tilt), st = Math.sin(gv.tilt);
+    const ry = y * ct - rz * st, rzz = y * st + rz * ct;
+    const tz = rzz + 300;
+    // w and h are already device pixels, so f carries the pixel ratio. Applying
+    // sc again on top scaled the whole scene by the ratio twice, which is why
+    // the orbit came out a third of the size it should have been.
+    const f = (Math.min(w, h * 2.2) * 0.72) / Math.max(tz, 1);
+    return { X: w / 2 + rx * f, Y: h / 2 + ry * f, s: f, z: tz };
+  }
+
+  let gLast = 0;
   function drawGraph(t) {
-    const w = g.clientWidth * devicePixelRatio, h = 300 * devicePixelRatio;
+    const sc = devicePixelRatio;
+    const w = g.clientWidth * sc, h = 300 * sc;
     if (g.width !== w) { g.width = w; g.height = h; }
     gctx.clearRect(0, 0, w, h);
-    const cx = w / 2, cy = h / 2, sc = devicePixelRatio;
-    for (const o of [58, 102, 140]) {
-      gctx.beginPath(); gctx.arc(cx, cy, o * sc, 0, 7);
-      gctx.strokeStyle = "rgba(155,193,224,0.10)"; gctx.lineWidth = 1; gctx.stroke();
+
+    const dt = gLast ? Math.min(t - gLast, 50) : 16; gLast = t;
+    if (!reduced) {
+      nodes.forEach((nd) => { nd.a += nd.sp * dt; });
+      gv.ang += dt * 0.00003 + gv.spin;
+      gv.spin *= 0.94;
     }
-    const drift = reduced ? 0 : t * 0.000045;
-    for (const nd of nodes) {
-      const ang = nd.a + drift * (nd.o ? 60 / nd.o : 0);
-      nd.x = cx + Math.cos(ang) * nd.o * sc;
-      nd.y = cy + Math.sin(ang) * nd.o * sc * 0.82;
-    }
-    for (const nd of nodes) if (nd.o) {
-      gctx.beginPath(); gctx.moveTo(cx, cy); gctx.lineTo(nd.x, nd.y);
-      gctx.strokeStyle = lit.has(nd.n) ? "rgba(242,146,107,0.5)" : "rgba(155,193,224,0.06)";
-      gctx.stroke();
-    }
-    for (const nd of nodes) {
-      const hot = lit.has(nd.n) || nd.k === "core";
+
+    [[58, 0.24], [102, 0.44], [140, 0.62]].forEach(([r, tl]) => {
       gctx.beginPath();
-      gctx.arc(nd.x, nd.y, (nd.k === "core" ? 5 : 3.2) * sc, 0, 7);
+      for (let i = 0; i <= 56; i++) {
+        const ang = (i / 56) * Math.PI * 2;
+        const pt = gProject(Math.cos(ang) * r, Math.sin(ang) * r * Math.sin(tl) * 0.62, Math.sin(ang) * r, w, h, sc);
+        i ? gctx.lineTo(pt.X, pt.Y) : gctx.moveTo(pt.X, pt.Y);
+      }
+      gctx.closePath();
+      gctx.strokeStyle = "rgba(155,193,224,0.09)"; gctx.lineWidth = 1; gctx.stroke();
+    });
+
+    const core = gProject(0, 0, 0, w, h, sc);
+    const pts = nodes.map((nd) => {
+      if (!nd.r) return { nd, p: core };
+      const x = Math.cos(nd.a) * nd.r;
+      const z = Math.sin(nd.a) * nd.r;
+      const y = Math.sin(nd.a) * nd.r * Math.sin(nd.tilt) * 0.62;
+      return { nd, p: gProject(x, y, z, w, h, sc) };
+    }).sort((m, n) => n.p.z - m.p.z);
+
+    pts.forEach(({ nd, p }) => {
+      if (!nd.r || !lit.has(nd.n)) return;
+      gctx.beginPath(); gctx.moveTo(core.X, core.Y); gctx.lineTo(p.X, p.Y);
+      gctx.strokeStyle = "rgba(242,146,107,0.45)"; gctx.lineWidth = 1; gctx.stroke();
+    });
+
+    pts.forEach(({ nd, p }) => {
+      const hot = lit.has(nd.n) || nd.k === "core";
+      const depth = Math.max(0.3, Math.min(1, (430 - p.z) / 210));
+      gctx.globalAlpha = hot ? 1 : depth;
+      gctx.beginPath();
+      gctx.arc(p.X, p.Y, (nd.k === "core" ? 4.4 : 3.0) * p.s, 0, 7);
       gctx.fillStyle = hot ? "#F2926B" : (nd.k === "person" ? "#9BC1E0" : "#5A6B82");
-      if (hot) { gctx.shadowColor = "rgba(242,146,107,0.8)"; gctx.shadowBlur = 12 * sc; }
+      if (hot) { gctx.shadowColor = "rgba(242,146,107,0.8)"; gctx.shadowBlur = 11 * sc; }
       gctx.fill(); gctx.shadowBlur = 0;
-      gctx.font = 10.5 * sc + "px Menlo, monospace";
-      gctx.fillStyle = hot ? "#E6EAF2" : "#7C8698";
-      gctx.textAlign = "center";
-      gctx.fillText(nd.n, nd.x, nd.y - 9 * sc);
-    }
+
+      if (hot || p.z < 268) {
+        gctx.globalAlpha = hot ? 1 : Math.max(0.34, depth);
+        gctx.font = 10.5 * sc + "px Menlo, monospace";
+        gctx.fillStyle = hot ? "#E6EAF2" : "#7C8698";
+        gctx.textAlign = "center";
+        gctx.fillText(nd.n, p.X, p.Y - (nd.k === "core" ? 15 : 10) * sc);
+      }
+    });
+    gctx.globalAlpha = 1;
     requestAnimationFrame(drawGraph);
   }
   requestAnimationFrame(drawGraph);
