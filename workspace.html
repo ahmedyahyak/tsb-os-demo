@@ -308,6 +308,9 @@
       <button class="nb" data-v="staff">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 20c0-3.3 2.5-5.6 5.5-5.6s5.5 2.3 5.5 5.6"/><circle cx="17.5" cy="9.5" r="2.4"/><path d="M16 14.6c2.6-.4 4.5 1.7 4.5 4.4"/></svg>
         Departments</button>
+      <button class="nb" data-v="progress">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 19V5M4 15l5-4 4 3 7-6"/><circle cx="20" cy="8" r="1.6" fill="currentColor" stroke="none"/></svg>
+        Progress <span class="cnt q">7</span></button>
       <button class="nb" data-v="clients">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="5" height="16" rx="1.4"/><rect x="10" y="4" width="5" height="11" rx="1.4"/><rect x="17" y="4" width="4" height="7" rx="1.4"/></svg>
         Clients <span class="cnt q">34</span></button>
@@ -385,6 +388,15 @@
           <div class="vk">Tuesday, this morning</div>
           <h1>Six of your staff are already working.</h1>
           <p>Nobody started them. They read the overnight mail, moved what could move, and left three things that need a human on the approvals queue.</p>
+        </div>
+
+        <div class="grid g2" style="margin-bottom:14px">
+          <div class="card kpi"><div class="cl">Next meeting</div>
+            <div class="v" style="font-size:14.5px;line-height:1.5">Tomorrow 12:00 · Al Noor site review</div>
+            <div class="d">with Fatima · via calendly</div></div>
+          <div class="card kpi"><div class="cl">On your plate</div>
+            <div class="v num">7</div>
+            <div class="d">open deals, proposals and tasks</div></div>
         </div>
 
         <div class="grid g4">
@@ -516,6 +528,37 @@
             </tbody>
           </table>
         </div>
+      </section>
+
+      <section class="view" id="v-progress">
+        <div class="vh">
+          <div class="vk">Progress</div>
+          <h1>Everything on your plate, and where it stands.</h1>
+          <p>Meetings from your calendar, Calendly included, holidays excluded.
+            Deals, proposals and tasks from the ledger the departments keep.
+            Tell Madar what changed, in chat, and this board moves.</p>
+        </div>
+        <div class="card" style="margin-bottom:14px">
+          <div class="ch"><h3>Coming up</h3></div>
+          <div class="mono" style="font-size:12.5px;line-height:2;color:var(--dim)">
+            <div>2026-08-29 12:00  ·  Al Noor site review  ·  Fatima  ·  via calendly</div>
+            <div>2026-08-31 10:30  ·  Marina Foods quarterly pricing  ·  Omar</div>
+            <div>2026-09-02 14:00  ·  Pulse Fitness campaign sign off  ·  Sara</div>
+          </div>
+        </div>
+        <div class="card" style="padding:0;overflow:hidden"><table>
+          <thead><tr><th>Item</th><th style="width:92px">Kind</th><th style="width:130px">Status</th><th>Latest</th></tr></thead>
+          <tbody>
+            <tr><td>Al Noor fit out contract</td><td class="mono">deal</td><td><span class="pill lead">waiting · 08-29</span></td><td>site review tomorrow decides scope</td></tr>
+            <tr><td>Marina Foods retainer renewal</td><td class="mono">proposal</td><td><span class="pill other">pending</span></td><td>drafted in your voice, held for your yes</td></tr>
+            <tr><td>Invoice 2214 chase</td><td class="mono">task</td><td><span class="pill lead">waiting</span></td><td>matched to payment 8841, ready to send</td></tr>
+            <tr><td>Northline re-engagement</td><td class="mono">deal</td><td><span class="pill other">pending</span></td><td>no third chase without a reason</td></tr>
+            <tr><td>Pulse Ramadan creative</td><td class="mono">task</td><td><span class="pill other">pending</span></td><td>Arabic first, Sara signs off Tuesday</td></tr>
+            <tr><td>Sahara Interiors brief v3</td><td class="mono">proposal</td><td><span class="pill lead">waiting · 09-04</span></td><td>the 19th version is the live one</td></tr>
+            <tr><td>Delta Foodstuff first call</td><td class="mono">meeting</td><td><span class="pill other">pending</span></td><td>Thursday, research brief ready</td></tr>
+          </tbody>
+        </table></div>
+        <div class="note" style="margin-top:13px">Update by telling Madar: "al noor signed", "meeting moved to Tuesday". The morning nudge on Telegram reads this same board, one message, never a flood.</div>
       </section>
 
       <section class="view" id="v-pipeline">
@@ -665,7 +708,7 @@
   }, RM?200:1350);
 
   /* ------------------------------------------------------ routing */
-  var titles = {assistant:'Assistant',center:'Command Center',approvals:'Approvals',activity:'Live Activity',staff:'Departments',clients:'Clients',pipeline:'Pipeline',outreach:'Outreach',memory:'Memory',tools:'Tools and mail'};
+  var titles = {assistant:'Assistant',center:'Command Center',progress:'Progress',approvals:'Approvals',activity:'Live Activity',staff:'Departments',clients:'Clients',pipeline:'Pipeline',outreach:'Outreach',memory:'Memory',tools:'Tools and mail'};
   var nav = document.getElementById('nav');
   nav.addEventListener('click', function(e){
     var b = e.target.closest('.nb'); if(!b) return;
