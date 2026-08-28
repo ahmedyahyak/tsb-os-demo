@@ -587,5 +587,14 @@
       : q.includes("app") || q.includes("fitness") ? "app" : "");
   });
 </script>
+<script defer src="/assets/vendor/lenis.min.js"></script>
+<script>
+  window.addEventListener('load', function () {
+    if (!window.Lenis) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    document.documentElement.style.scrollBehavior = 'auto';
+    new window.Lenis({ autoRaf: true, duration: 0.9, syncTouch: false });
+  });
+</script>
 </body>
 </html>
