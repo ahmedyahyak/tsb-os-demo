@@ -478,9 +478,35 @@
       <section class="view" id="v-clients">
         <div class="vh">
           <div class="vk">Clients</div>
-          <h1>The book, kept current by the staff who work it.</h1>
-          <p>Nobody types into this board. It is a projection of the records your sales department maintains, and it moves when the work moves.</p>
+          <h1>The book, as the system holds it.</h1>
+          <p>A projection of the CRM. Nobody types into this table; it moves
+            when the work moves.</p>
         </div>
+        <div class="grid g4" style="margin-bottom:14px">
+          <div class="card kpi"><div class="cl">Trading division</div><div class="v num">21</div><div class="d">clients on the book</div></div>
+          <div class="card kpi"><div class="cl">Projects division</div><div class="v num">13</div><div class="d">clients on the book</div></div>
+          <div class="card kpi"><div class="cl">Replied this week</div><div class="v num">6</div><div class="d">filed, follow ups drafted</div></div>
+          <div class="card kpi"><div class="cl">New this week</div><div class="v num">3</div><div class="d">researched before first touch</div></div>
+        </div>
+        <div class="card" style="padding:0;overflow:hidden">
+          <table>
+            <thead><tr><th>Name</th><th>Company</th><th>Division</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td>N. Hassan</td><td>Gulf Metal Works</td><td>Trading</td><td style="color:var(--warn)">quote out</td></tr>
+              <tr><td>S. Al Riyami</td><td>Rashid Brothers</td><td>Projects</td><td style="color:var(--ok)">client</td></tr>
+              <tr><td>M. Farsi</td><td>Marine Supply Co</td><td>Trading</td><td style="color:var(--warn)">proposal read</td></tr>
+              <tr><td>K. Balushi</td><td>Nadd Contracting</td><td>Projects</td><td>pricing next</td></tr>
+              <tr><td>A. Zadjali</td><td>Sahara Interiors</td><td>Projects</td><td style="color:var(--ok)">replied</td></tr>
+              <tr><td>R. Lawati</td><td>Falcon Print</td><td>Trading</td><td style="color:var(--copper)">chase held for you</td></tr>
+              <tr><td>H. Habsi</td><td>Delta Foodstuff</td><td>Trading</td><td>first call Thursday</td></tr>
+              <tr><td>F. Kindi</td><td>Coast Fitout</td><td>Projects</td><td style="color:var(--ok)">client</td></tr>
+              <tr><td>J. Siyabi</td><td>Harbour Logistics</td><td>Trading</td><td>inbound, researching</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="view" id="v-kanban-parked" hidden>
         <div class="kan">
           <div class="col"><div class="h"><span>New</span><b class="num">$61,000</b></div>
             <div class="deal"><div class="c">Gulf Metal Works</div><div class="v num">$28,500</div><div class="w">quote sent · waiting reply</div></div>
