@@ -61,6 +61,7 @@ a{color:inherit}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .num{font-variant-numeric:tabular-nums}
 ::selection{background:var(--copper);color:#1A0E08}
+input,textarea,select{caret-color:var(--copper)}
 :focus-visible{outline:2px solid var(--copper);outline-offset:3px;border-radius:4px}
 
 .wrap{width:100%;max-width:1140px;margin:0 auto;padding:0 var(--gut)}
@@ -118,6 +119,7 @@ h1 .soft,h2 .soft,.hero h1 .soft{color:var(--dim)}
 .btn.primary:hover{transform:translateY(-2px);box-shadow:0 12px 34px rgba(242,146,107,.26);filter:brightness(1.06)}
 .btn.ghost{color:var(--dim);border:1px solid var(--line-2)}
 .btn.ghost:hover{color:var(--text);border-color:var(--line-3);transform:translateY(-2px)}
+.btn:active{transform:scale(.97)}
 .btns{display:flex;gap:13px;flex-wrap:wrap;margin-top:32px}
 .under{margin-top:15px;font-family:var(--mono);font-size:12px;color:var(--faint)}
 

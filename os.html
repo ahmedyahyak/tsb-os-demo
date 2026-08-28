@@ -55,8 +55,8 @@
   @keyframes blink { 50% { opacity: 0; } }
 
   .bar { margin-top: 26px; display: flex; align-items: center; gap: 14px; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 17px 22px; transition: border-color .4s, box-shadow .4s; }
-  .bar:focus-within, .bar.live { border-color: rgba(242,146,107,0.5); box-shadow: 0 0 44px rgba(242,146,107,0.08); }
-  .bar .sigil { width: 10px; height: 10px; border-radius: 50%; background: var(--copper); box-shadow: 0 0 16px rgba(242,146,107,0.6); flex: none; }
+  .bar:focus-within, .bar.live { border-color: rgba(242,146,107,0.5); box-shadow: 0 14px 44px -16px rgba(242,146,107,.22); }
+  .bar .sigil { width: 10px; height: 10px; border-radius: 50%; background: var(--copper); box-shadow: 0 0 0 3px rgba(242,146,107,.16); flex: none; }
   .bar input { flex: 1; background: none; border: none; outline: none; color: var(--text); font-family: var(--body); font-size: 17px; }
   .bar input::placeholder { color: var(--faint); }
   .bar .hint { font-family: var(--mono); font-size: 12px; color: var(--faint); flex: none; }
@@ -106,7 +106,7 @@
   .pulse-row { display: flex; gap: 24px; flex-wrap: wrap; padding: 2px 18px 14px; font-family: var(--mono); font-size: 12px; color: var(--dim); }
   .pulse-row b { color: var(--text); font-weight: 400; }
   .dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 8px; vertical-align: 1px; }
-  .dot.run { background: var(--copper); box-shadow: 0 0 10px rgba(242,146,107,0.6); animation: pulse 2.4s ease-in-out infinite; }
+  .dot.run { background: var(--copper); box-shadow: 0 0 0 3px rgba(242,146,107,.18); animation: pulse 2.4s ease-in-out infinite; }
   @keyframes pulse { 50% { transform: scale(0.75); opacity: .75; } }
   .dot.wait { background: var(--warn); }
   .dot.block { background: var(--faint); }
