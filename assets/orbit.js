@@ -104,7 +104,7 @@
   });
 
   var st = { ang: -0.5, tilt: 0.46, spin: 0 };
-  var W = 0, H = 0, sel = null, hover = null, pulse = 0;
+  var W = 0, H = 0, sel = null, hover = null, pulse = 0, glintA = 0;
 
   /* Where the scene is drawn this frame, and how loudly. Recomputed from the
      scroll position before every draw, so `project` stays pure. */
@@ -185,7 +185,7 @@
        reason this looks three dimensional at all. */
     RINGS.forEach(function (r, ri) {
       var tl = 0.30 + ri * 0.16;
-      var prev = null;
+      var prev = null, prevA = 0;
       for (var t = 0; t <= 64; t++) {
         var a = (t / 64) * Math.PI * 2;
         var p = project(Math.cos(a) * r, Math.sin(a) * r * Math.sin(tl) * 0.3, Math.sin(a) * r);
@@ -196,14 +196,49 @@
           ctx.globalAlpha = (0.05 + depth * 0.17) * A;
           ctx.lineWidth = 0.7 + depth * 0.7;
           ctx.stroke();
+          /* The glint. A narrow specular highlight sweeps each ring on its
+             own period, which is what says machined metal rather than drawn
+             ellipse. The pow keeps it a point of light, not a bright half. */
+          var gl = Math.pow(Math.max(0, Math.cos((a + prevA) / 2 - glintA - ri * 2.1)), 26);
+          if (gl > 0.03) {
+            ctx.beginPath(); ctx.moveTo(prev.X, prev.Y); ctx.lineTo(p.X, p.Y);
+            ctx.strokeStyle = mix(ice, '#ffffff', 0.65);
+            ctx.globalAlpha = gl * 0.5 * depth * A;
+            ctx.lineWidth = 1.3;
+            ctx.stroke();
+          }
         }
-        prev = p;
+        prev = p; prevA = a;
       }
     });
     ctx.globalAlpha = 1;
 
     var pts = BODIES.map(function (b) { return { b: b, p: place(b) }; })
                     .sort(function (m, n) { return n.p.z - m.p.z; });
+
+    /* Each body trails a short fading arc along its own ring, so the orbit
+       is legible as motion even in a still glance. Skipped under reduced
+       motion, where nothing moves and a trail would be a lie. */
+    if (!reduce) {
+      pts.forEach(function (o) {
+        var b = o.b, seg = 9;
+        ctx.strokeStyle = b.hot ? copper : ice;
+        var pv = null;
+        for (var q = seg; q >= 0; q--) {
+          var aa = b.a - q * 0.055;
+          var tp = project(Math.cos(aa) * b.r,
+                           Math.sin(aa) * b.r * Math.sin(b.tilt) * 0.5 * 0.6,
+                           Math.sin(aa) * b.r);
+          if (pv) {
+            ctx.globalAlpha = ((seg - q) / seg) * 0.20 * A;
+            ctx.lineWidth = 0.9;
+            ctx.beginPath(); ctx.moveTo(pv.X, pv.Y); ctx.lineTo(tp.X, tp.Y); ctx.stroke();
+          }
+          pv = tp;
+        }
+      });
+      ctx.globalAlpha = 1;
+    }
 
     /* a thread from centre to anything waiting on the owner */
     var c0 = project(0, 0, 0);
@@ -212,6 +247,21 @@
       ctx.beginPath(); ctx.moveTo(c0.X, c0.Y); ctx.lineTo(o.p.X, o.p.Y);
       ctx.strokeStyle = copper; ctx.globalAlpha = (0.20 + Math.sin(pulse) * 0.12) * A;
       ctx.lineWidth = 1; ctx.stroke();
+      /* The request travels the thread: a packet of copper light moving
+         from the waiting item to you, which is the product's whole story
+         drawn in one moving point. Derived from the clock, so it costs no
+         state, and skipped under reduced motion. */
+      if (!reduce) {
+        var tt = (pulse * 0.13) % 1;
+        var qx = o.p.X + (c0.X - o.p.X) * tt, qy = o.p.Y + (c0.Y - o.p.Y) * tt;
+        ctx.save(); ctx.globalCompositeOperation = 'lighter';
+        var pg = ctx.createRadialGradient(qx, qy, 0.5, qx, qy, 6);
+        pg.addColorStop(0, mix(copper, '#ffffff', 0.35));
+        pg.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.globalAlpha = 0.7 * A; ctx.fillStyle = pg;
+        ctx.beginPath(); ctx.arc(qx, qy, 6, 0, Math.PI * 2); ctx.fill();
+        ctx.restore();
+      }
     });
     ctx.globalAlpha = 1;
 
@@ -224,6 +274,13 @@
       var rad = clamp((live ? 5.4 : 3.4) * p.s * view.dot, 2.4, live ? 9 : 6.5);
       ctx.globalAlpha = Math.max(0.28, Math.min(1, (420 - p.z) / 200)) * A;
       var col = live ? copper : ice;
+      /* Atmosphere. Far bodies sink toward the panel tone as well as fading,
+         which is what gives the shell a back wall instead of a dimmer
+         switch. Live bodies are exempt: what needs you never recedes. */
+      if (!live) {
+        var haze = clamp((p.z - 300) / 130, 0, 1);
+        if (haze > 0.02) col = mix(col, '#0D111A', haze * 0.48);
+      }
 
       /* A flat disc is a dot on a screen. A radial gradient with the light
          off the top left is a small sphere, and it costs one gradient. */
@@ -365,8 +422,9 @@
   function frame(ts) {
     if (!last) last = ts;
     var dt = Math.min(ts - last, 50); last = ts;
-    pulse += dt * 0.004;
     if (!reduce) {
+      pulse += dt * 0.004;
+      glintA += dt * 0.00042;
       BODIES.forEach(function (b) { b.a += b.sp * dt; });
       st.ang += dt * 0.00004 + st.spin;
       st.spin *= 0.94;
