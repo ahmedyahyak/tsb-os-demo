@@ -14,15 +14,15 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --void:#06080C; --deep:#080B11; --panel: #0D111A; --panel-2:#121724; --raise:#171D2C;
+    --void:#07090D; --deep:#080B11; --panel: #0D111A; --panel-2:#151A23; --raise:#171D2C;
     --line:rgba(155,193,224,0.11); --line-2:rgba(155,193,224,0.2); --line-3:rgba(155,193,224,0.34);
-    --copper:#F2926B; --copper-dim:rgba(242,146,107,0.14); --ice:#9BC1E0; --ice-dim:rgba(155,193,224,0.12);
+    --copper:#F2926B; --copper-dim:rgba(242,146,107,0.13); --ice:#9BC1E0; --ice-dim:rgba(155,193,224,0.12);
     --text: #EAEEF6; --dim: #8B95A8; --faint: #7A8497;
-    --ok:#7FBF8E; --warn:#E8C07D; --stop:#E08585;
+    --ok:#7FBF8E; --warn:#D9B36A; --stop:#E08585;
     --display:"Space Grotesk",system-ui,sans-serif;
     --body:"Inter",system-ui,sans-serif;
     --mono:"IBM Plex Mono",ui-monospace,monospace;
-    --r:14px; --r-s:9px;
+    --r:16px; --r-s:10px;
     --ease:cubic-bezier(.2,.7,.3,1);
   }
   *{margin:0;padding:0;box-sizing:border-box}
@@ -44,8 +44,11 @@
   .bootmark{font-family:var(--display);font-size:13px;letter-spacing:.5em;text-transform:uppercase;color:var(--text)}
   .bootmark em{font-style:normal;color:var(--copper)}
   .bootbar{width:190px;height:2px;background:var(--line);border-radius:2px;margin:22px auto 0;overflow:hidden}
-  .bootbar i{display:block;height:100%;width:0;background:var(--copper);animation:fill 1.15s var(--ease) forwards}
-  @keyframes fill{to{width:100%}}
+  /* scaleX, not width: animating width forces layout every frame. Same
+     pattern as start.html's .seg i, which had this right already. */
+  .bootbar i{display:block;height:100%;width:100%;background:var(--copper);
+    transform:scaleX(0);transform-origin:left;animation:fill 1.15s var(--ease) forwards}
+  @keyframes fill{to{transform:scaleX(1)}}
   .bootlog{margin-top:16px;font-family:var(--mono);font-size:12px;color:var(--faint);height:16px}
 
   /* ---------------------------------------------------------- shell */
@@ -136,7 +139,7 @@
      a wash over the card, never the ground the glyph sits on, and declaring
      them as colour made every checker read 13% ice as solid ice. */
   .pill.run{background-image:linear-gradient(rgba(155,193,224,.13),rgba(155,193,224,.13));color:var(--ice)}
-  .pill.wait{background-image:linear-gradient(rgba(232,192,125,.13),rgba(232,192,125,.13));color:var(--warn)}
+  .pill.wait{background-image:linear-gradient(rgba(217,179,106,.13),rgba(217,179,106,.13));color:var(--warn)}
   .pill.done{background-image:linear-gradient(rgba(127,191,142,.13),rgba(127,191,142,.13));color:var(--ok)}
   .pill.hold{background-image:linear-gradient(rgba(224,133,133,.13),rgba(224,133,133,.13));color:var(--stop)}
   .pill i{width:5px;height:5px;border-radius:50%;background:currentColor;display:block}

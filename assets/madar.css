@@ -12,14 +12,23 @@
    ========================================================================= */
 
 :root {
-  /* ground */
-  --void:#06080C; --deep:#080B11; --panel:#0D111A; --panel-2:#121724; --raise:#171D2C;
+  /* ground.
+     --void settled at #07090D on 2026-08-29: five of seven pages already
+     rendered it and it is the value in the brand record. The old #06080C
+     survived only here and on workspace, which meant the ground shifted by
+     a luminance step between pages, the kind of drift nobody can name but
+     everyone feels. One value now, and the page-level :root forks that
+     caused it are gone. */
+  --void:#07090D; --deep:#080B11; --panel:#0D111A; --panel-2:#151A23; --raise:#171D2C;
   --line:rgba(155,193,224,0.11); --line-2:rgba(155,193,224,0.2); --line-3:rgba(155,193,224,0.34);
 
-  /* meaning */
+  /* meaning.
+     --warn settled at #D9B36A, the brand-record value: it marks the held
+     and waiting states, and a warning that changes hue between the demo
+     and the workspace is two warnings. */
   --copper:#F2926B; --copper-dim:rgba(242,146,107,0.13); --copper-deep:#B4643F;
   --ice:#9BC1E0; --ice-dim:rgba(155,193,224,0.12);
-  --ok:#7FBF8E; --warn:#E8C07D; --stop:#E08585;
+  --ok:#7FBF8E; --warn:#D9B36A; --stop:#E08585;
 
   /* text
      Three tiers, all of which have to be readable. --faint was #525C6E, which
@@ -59,10 +68,19 @@ body{background:var(--void);color:var(--text);font-family:var(--body);font-size:
 img,svg{max-width:100%}
 a{color:inherit}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
-.num{font-variant-numeric:tabular-nums}
+.num,td,.price,.plan .price,.vrow span{font-variant-numeric:tabular-nums}
 ::selection{background:var(--copper);color:#1A0E08}
 input,textarea,select{caret-color:var(--copper)}
 :focus-visible{outline:2px solid var(--copper);outline-offset:3px;border-radius:4px}
+
+/* The scrollbar was themed on exactly one page, workspace, and the other
+   six rendered the OS default against near-black. Promoted here so every
+   surface gets it. */
+html{scrollbar-color:var(--line-2) var(--void);scrollbar-width:thin}
+::-webkit-scrollbar{width:9px;height:9px}
+::-webkit-scrollbar-track{background:var(--void)}
+::-webkit-scrollbar-thumb{background:var(--line-2);border-radius:6px;border:2px solid var(--void)}
+::-webkit-scrollbar-thumb:hover{background:var(--line-3)}
 
 .wrap{width:100%;max-width:1140px;margin:0 auto;padding:0 var(--gut)}
 .wrap-narrow{max-width:880px}
@@ -79,9 +97,15 @@ h3{font-size:var(--t-h3);letter-spacing:-.01em}
 h1 .soft,h2 .soft,.hero h1 .soft{color:var(--dim)}
 .lede{font-size:var(--t-lede);color:var(--dim);line-height:1.7;max-width:60ch}
 .lede b,.lede strong{color:var(--text);font-weight:500}
-.label{font-family:var(--mono);font-size:var(--t-label);letter-spacing:.2em;text-transform:uppercase;color:var(--copper)}
+/* Eyebrows are machine-side by default. Copper is reserved for the ring
+   and the active thing, which is the product's thesis expressed as colour:
+   on any screen, the one copper object is the thing that needs you. A
+   reader used to pass seven copper eyebrows before reaching one copper
+   thing that meant anything. */
+.label{font-family:var(--mono);font-size:var(--t-label);letter-spacing:.2em;text-transform:uppercase;color:var(--ice)}
 .label.cold{color:var(--ice)}
 .label.mute{color:var(--faint)}
+.label.warm{color:var(--copper)}
 .small{font-size:var(--t-small);color:var(--dim);line-height:1.65}
 .mono{font-family:var(--mono)}
 
@@ -99,7 +123,7 @@ h1 .soft,h2 .soft,.hero h1 .soft{color:var(--dim)}
 .head .lede{margin-top:16px}
 
 /* ------------------------------------------------------------------- nav */
-.nav{display:flex;align-items:center;gap:16px;padding:20px 0;position:sticky;top:0;z-index:50;background:rgba(6,8,12,.82);backdrop-filter:blur(14px);border-bottom:1px solid transparent;transition:border-color .3s}
+.nav{display:flex;align-items:center;gap:16px;padding:20px 0;position:sticky;top:0;z-index:50;background:rgba(7,9,13,.82);backdrop-filter:blur(14px);border-bottom:1px solid transparent;transition:border-color .3s}
 .nav.stuck{border-bottom-color:var(--line)}
 .nav .mark{display:flex;align-items:center;gap:10px;text-decoration:none;flex:none}
 .wordmark{font-family:var(--display);font-size:12.5px;letter-spacing:.4em;text-transform:uppercase;font-weight:600}
@@ -120,6 +144,8 @@ h1 .soft,h2 .soft,.hero h1 .soft{color:var(--dim)}
 .btn.ghost{color:var(--dim);border:1px solid var(--line-2)}
 .btn.ghost:hover{color:var(--text);border-color:var(--line-3);transform:translateY(-2px)}
 .btn:active{transform:scale(.97)}
+.btn:disabled,.btn[aria-disabled="true"]{opacity:.45;cursor:not-allowed;
+  transform:none;pointer-events:none}
 .btns{display:flex;gap:13px;flex-wrap:wrap;margin-top:32px}
 .under{margin-top:15px;font-family:var(--mono);font-size:12px;color:var(--faint)}
 
@@ -144,11 +170,17 @@ h1 .soft,h2 .soft,.hero h1 .soft{color:var(--dim)}
 .pill{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:12px;letter-spacing:.07em;text-transform:uppercase;padding:4px 11px;border-radius:var(--r-pill);border:1px solid var(--line);color:var(--dim)}
 .pill.live{color:var(--copper);border-color:rgba(242,146,107,.34)}
 .pill i{width:5px;height:5px;border-radius:50%;background:currentColor}
-.dot-live{width:6px;height:6px;border-radius:50%;background:var(--ok);animation:beat 2.4s infinite}
-@keyframes beat{0%{box-shadow:0 0 0 0 rgba(127,191,142,.5)}70%{box-shadow:0 0 0 7px rgba(127,191,142,0)}100%{box-shadow:0 0 0 0 rgba(127,191,142,0)}}
+/* Static on purpose. This dot sits over sample data on the homepage, and a
+   pulse over a hardcoded array is fake telemetry: the exact tell the review
+   named. A state is a colour, not a heartbeat. */
+.dot-live{width:6px;height:6px;border-radius:50%;background:var(--ice)}
 
 .rule{height:1px;background:linear-gradient(90deg,var(--line-2),transparent);margin:0}
-.note{border-left:2px solid var(--copper);padding-left:17px;color:var(--dim);font-size:var(--t-small);line-height:1.75;max-width:76ch}
+/* A rule above the block, not a stripe beside it: the side stripe is the
+   most recognisable template tell there is, and .rule is already this
+   system's own device for exactly this signal. */
+.note{border-top:1px solid color-mix(in srgb,var(--copper) 40%,transparent);
+  padding-top:16px;color:var(--dim);font-size:var(--t-small);line-height:1.75;max-width:76ch}
 .note b{color:var(--text);font-weight:500}
 
 .stats{display:flex;flex-wrap:wrap;gap:clamp(22px,4vw,54px);padding:26px 0}
@@ -159,17 +191,30 @@ h1 .soft,h2 .soft,.hero h1 .soft{color:var(--dim)}
 footer{border-top:1px solid var(--line);padding:40px 0 56px;font-family:var(--mono);font-size:12px;color:var(--faint)}
 footer .row{display:flex;gap:18px;flex-wrap:wrap;align-items:center}
 footer a{color:var(--dim);text-decoration:none;transition:color .18s}
-footer a:hover{color:var(--copper)}
+footer a:hover{color:var(--text)}
 footer .gap{flex:1}
 
-/* --------------------------------------------------------------- reveal */
-.rise{opacity:0;transform:translateY(15px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+/* --------------------------------------------------------------- reveal
+   One deliberate focal entrance per page, not a page-wide curtain. This
+   class used to sit on roughly twenty elements a page at 700ms each, which
+   is the "same fade and rise on every section" the design standard bans.
+   The 620ms is the focal-entrance budget, spent once. */
+.rise{opacity:0;transform:translateY(10px);transition:opacity .62s var(--ease),transform .62s var(--ease)}
 .rise.seen{opacity:1;transform:none}
+/* The card stagger that survives: first three cards, opacity only, 55ms. */
+.cap.rise{transform:none}
 
+/* Reduced motion strips the spatial part and keeps the informative part.
+   The old blanket kill also removed every hover and focus transition, which
+   left an interface where nothing acknowledges input. Colour and opacity
+   carry meaning about what changed; they stay. */
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
-  *{animation:none!important;transition:none!important}
+  *{transition-property:color,background-color,border-color,opacity,
+      box-shadow,outline-color!important;
+    transition-duration:.16s!important;animation:none!important}
   .rise{opacity:1;transform:none}
+  .btn:hover,.btn:active,.panel:hover{transform:none}
 }
 
 /* ============================================================================
